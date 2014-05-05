@@ -1,0 +1,4 @@
+- name: Reload Nginx
+  sudo: true
+  service: name=nginx
+           state=reloaded

@@ -1,0 +1,29 @@
+- name: Add Cassandra 2.0 APT key
+  sudo: true
+  apt_key: url=http://debian.datastax.com/debian/repo_key
+
+- name: Add Cassandra 2.0 APT repo
+  sudo: true
+  apt_repository: repo='deb http://debian.datastax.com/community/ stable main'
+
+- name: Install Cassandra 2.0
+  sudo: true
+  apt: pkg=cassandra
+
+- name: Fix permission problems on Cassandra folders
+  sudo: true
+  file: path={{ item }}
+        owner=cassandra
+        group=cassandra
+        state=directory
+        recurse=yes
+  with_items:
+    - /var/lib/cassandra
+    - /var/log/cassandra
+
+- name: Ensure Cassandra is started and enabled
+  sudo: true
+  service: name=cassandra state=started enabled=yes
+
+- name: Set up initial Cassandra keyspace and tables
+  shell: cqlsh < ~/tamarack/cql/initial-data.cql
