@@ -40,6 +40,12 @@
                [(rpad 2 "0" (.getHours d))
                 (rpad 2 "0" (.getMinutes d))]))
 
+(defn inst->iso [d]
+  (let [iso-format (.toISOString d)
+        dot-pos (.indexOf iso-format ".")
+        part (.substr iso-format 0 dot-pos)]
+    (str part "Z")))
+
 (defn parse-date-time [date-str time-str]
   (let [[y mo d] (map #(js/parseInt % 10) (string/split date-str "-"))
         [h mi] (map #(js/parseInt % 10) (string/split time-str ":"))]

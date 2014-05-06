@@ -38,8 +38,8 @@
                                            (-> app :current-app :app-id)
                                            "chart"
                                            (subs (str chart-type) 1)])
-                            "?from=" (.toISOString from)
-                            "&to=" (.toISOString to))]
+                            "?from=" (util/inst->iso from)
+                            "&to=" (util/inst->iso to))]
                (xhr/send-edn {:method :get
                               :url url
                               :on-complete
@@ -76,8 +76,8 @@
                                           (-> app :current-app :app-id)
                                           "aggregate"
                                           (subs (str agg-type) 1)])
-                           "?from=" (.toISOString from)
-                           "&to=" (.toISOString to))]
+                           "?from=" (util/inst->iso from)
+                           "&to=" (util/inst->iso to))]
               (xhr/send-edn {:method :get
                              :url url
                              :on-complete

@@ -11,7 +11,7 @@
 (defonce session (alia/connect cluster))
 
 (defonce timestamp-date-format (time-format/formatters :date))
-(defonce timestamp-format (time-format/formatters :date-time))
+(defonce timestamp-format (time-format/formatters :date-time-no-ms))
 
 (alia/execute session
               (hayt/create-keyspace
