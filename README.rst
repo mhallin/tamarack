@@ -63,6 +63,10 @@ everything you need:
 
 Open up http://localhost:3000 in a browser and everything should work.
 
+Note that the Vagrantfiles sets up the virtual machine to have 4 GB
+memory, as Java seems to consume a lot of memory. Be sure to have a
+lot of memory around, or run the services locally instead.
+
 Where To Go From Here?
 ======================
 
