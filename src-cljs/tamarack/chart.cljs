@@ -15,7 +15,7 @@
         height (- canvas-height margin-top margin-bottom)
 
         minutes (util/minutes-between from to)
-        max-data (apply max (map (fn [[_ v]] v) data))
+        max-data (apply max 0 (map (fn [[_ v]] v) data))
         total-minutes (- (count minutes) 1)
         step-width (/ width total-minutes)
         step-height (if (zero? max-data) 0 (/ height max-data))
