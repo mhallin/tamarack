@@ -2,6 +2,7 @@
   (:require [clj-time.core :as time]
             [clj-time.format :as time-format]
             [clj-time.coerce :as time-coerce]
+            [clj-time.periodic :as time-periodic]
             [qbits.alia :as alia]
             [qbits.hayt :as hayt]
             [tamarack.util :as util]))
@@ -45,6 +46,15 @@
                                      60000))
                             60000)))
 
+(defn timestamp-date-part [timestamp]
+  (time-format/unparse timestamp-date-format timestamp))
+
+(defn dates-between [from to]
+  (let [interval (time/interval from (time/plus to (time/hours 24)))]
+    (map timestamp-date-part
+         (take-while (partial time/within? interval)
+                     (time-periodic/periodic-seq from (time/hours 24))))))
+
 (defn process-request-data [app-id data]
   (let [{errors :errors
          requests :requests
@@ -59,7 +69,8 @@
                                      :requests (hayt/inc-by requests)
                                      :errors (hayt/inc-by errors)})
                                    (hayt/where {:app_id app-id
-                                                :timestamp (time-coerce/to-long timestamp-minute)}))]
+                                                :timestamp (time-coerce/to-long timestamp-minute)
+                                                :date_part (timestamp-date-part timestamp-minute)}))]
     (alia/execute session query-minute)))
 
 (defn process-endpoint-data [app-id data]
@@ -78,7 +89,8 @@
                                      :errors (hayt/inc-by errors)})
                                    (hayt/where {:app_id app-id
                                                 :endpoint endpoint
-                                                :timestamp (time-coerce/to-long timestamp-minute)}))]
+                                                :timestamp (time-coerce/to-long timestamp-minute)
+                                                :date_part (timestamp-date-part timestamp-minute)}))]
     (alia/execute session query-minute)))
 
 (defn request-data-by-minute [app-id from to]
@@ -87,6 +99,7 @@
         query (hayt/select :request_by_minute
                            (hayt/columns :timestamp :total_time :requests :errors)
                            (hayt/where [[= :app_id app-id]
+                                        [:in :date_part (dates-between from to)]
                                         [>= :timestamp from-long]
                                         [<= :timestamp to-long]]))]
     (alia/execute session query)))
@@ -97,6 +110,7 @@
         query (hayt/select :request_endpoint_by_minute_for_agg
                            (hayt/columns :timestamp :endpoint :total_time :requests :errors)
                            (hayt/where [[= :app_id app-id]
+                                        [:in :date_part (dates-between from to)]
                                         [>= :timestamp from-long]
                                         [<= :timestamp to-long]]))]
     (alia/execute session query)))
