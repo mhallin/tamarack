@@ -25,5 +25,8 @@
   sudo: true
   service: name=cassandra state=started enabled=yes
 
+- name: Wait for Cassandra to start up...
+  wait_for: port=9160
+
 - name: Set up initial Cassandra keyspace and tables
   shell: cqlsh < ~/tamarack/cql/initial-data.cql
