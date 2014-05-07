@@ -41,9 +41,30 @@
       {:last (:window-size timeslice) :tracking-now true}
       {:from (.toISOString from) :to (.toISOString to) :tracking-now false})))
 
+(defn remove-default-query-params [params]
+  (letfn [(remove-tracking-now [params]
+            (if (:tracking-now params)
+              (dissoc params :tracking-now)
+              params))
+          (remove-window-size [params]
+            (if (= state/default-tracking-now-window-size (:last params))
+              (dissoc params :last)
+              params))
+          (remove-conflicting [params]
+            (tamarack.util/log params)
+            (if (nil? (:tracking-now params))
+              (dissoc params :from :to)
+              (dissoc params :last)))]
+    ((comp remove-conflicting remove-tracking-now remove-window-size)
+     params)))
+
+(defn remove-route-defaults [route]
+  (update-in route [:query-params] remove-default-query-params))
+
 (defn navigate-to
   ([route arg]
-     (let [url (route (merge {:query-params (timeslice-query-params)} arg))]
+     (let [url (route (remove-route-defaults
+                       (merge {:query-params (timeslice-query-params)} arg)))]
        (.setToken history/history (subs url 1))))
   ([route]
      (navigate-to route {})))
@@ -55,7 +76,8 @@
                               [token ""]
                               [(subs token 0 qpos) (subs token (+ qpos 1))])
         query-params (secretary/decode-query-params query-string)
-        new-query-params (merge query-params (timeslice-query-params))
+        new-query-params (remove-default-query-params
+                          (merge query-params (timeslice-query-params)))
         new-query-string (secretary/encode-query-params new-query-params)
         token (string/join "?" [path new-query-string])]
     (.setToken history/history token)))
