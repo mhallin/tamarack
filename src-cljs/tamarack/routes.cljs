@@ -51,7 +51,6 @@
               (dissoc params :last)
               params))
           (remove-conflicting [params]
-            (tamarack.util/log params)
             (if (nil? (:tracking-now params))
               (dissoc params :from :to)
               (dissoc params :last)))]
