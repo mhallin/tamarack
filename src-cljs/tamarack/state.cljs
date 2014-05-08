@@ -21,7 +21,13 @@
   (update-timeslice app))
 
 (defn merge-state! [state]
-  (swap! app-state merge state))
+  (let [old-app (:current-app @app-state)
+        new-app (:current-app state)
+        merged-app (if (= (:app-id old-app) (:app-id new-app))
+                     (merge old-app new-app)
+                     new-app)
+        state' (assoc state :current-app merged-app)]
+    (swap! app-state merge state')))
 
 (defn init-state []
   (let [window (timeslice-ending-now default-tracking-now-window-size)
