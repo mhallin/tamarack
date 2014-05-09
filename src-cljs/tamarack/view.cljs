@@ -15,7 +15,23 @@
 (defn with-grid-col [cols & es]
   (apply dom/div #js {:className (str "col-md-" cols)} es))
 
-(defn chart-component [app owner {:keys [chart-type] :as opts}]
+(defn app-chart-url [app chart-type]
+  (let [comps [ "/explorer-api/v1/applications"
+                (:app-id app)
+                "chart"
+                (subs (str chart-type) 1)]]
+    (string/join "/" comps)))
+
+(defn app-endpoint-chart-url [app endpoint chart-type]
+  (let [comps [ "/explorer-api/v1/applications"
+                (:app-id app)
+                "endpoints"
+                endpoint
+                "chart"
+                (subs (str chart-type) 1)]]
+    (string/join "/" comps)))
+
+(defn chart-component [app owner {:keys [data-url] :as opts}]
   (let [canvas-width 293
         canvas-height 180]
    (letfn [(draw-my-chart []
@@ -33,11 +49,7 @@
                                 from to)))
            (fetch-data [app]
              (let [[from to] (-> app :timeslice :window)
-                   url (str (string/join "/"
-                                         [ "/explorer-api/v1/applications"
-                                           (-> app :current-app :app-id)
-                                           "chart"
-                                           (subs (str chart-type) 1)])
+                   url (str data-url
                             "?from=" (util/inst->iso from)
                             "&to=" (util/inst->iso to))]
                (xhr/send-edn {:method :get
@@ -84,9 +96,17 @@
                              (fn [res]
                                (om/set-state! owner :data res))})))
 
+          (goto-endpoint [endpoint e]
+            (.preventDefault e)
+            (routes/navigate-to routes/app-endpoint-overview
+                                {:id (-> @app :current-app :app-id)
+                                 :endpoint endpoint}))
+
           (render-row [[endpoint value]]
             (dom/tr nil
-                    (dom/td nil endpoint)
+                    (dom/td nil
+                            (dom/a #js {:href "#" :onClick (partial goto-endpoint endpoint)}
+                                   endpoint))
                     (dom/td #js {:className "num-col"}
                             (str (round-fn value) unit))))]
     (reify
@@ -109,6 +129,40 @@
          (apply dom/tbody nil
                 (map render-row (om/get-state owner :data))))))))
 
+(defn application-endpoint-overview [app owner]
+  (reify
+    om/IDisplayName
+    (display-name [_] "AppEndpointOverview")
+
+    om/IRender
+    (render [_]
+      (dom/div #js {:className "app-endpoint-overview"}
+               (with-grid-row
+                 (with-grid-col 12
+                   (dom/h2 nil "Application Endpoint Overview")))
+
+               (with-grid-row
+                 (with-grid-col 4
+                   (dom/h3 nil "Time per request")
+                   (om/build chart-component app
+                             {:opts {:data-url (app-endpoint-chart-url (:current-app app)
+                                                                       (:current-endpoint app)
+                                                                       :ms-per-req)}}))
+
+                 (with-grid-col 4
+                   (dom/h3 nil "Requests per minute")
+                   (om/build chart-component app
+                             {:opts {:data-url (app-endpoint-chart-url (:current-app app)
+                                                                       (:current-endpoint app)
+                                                                       :reqs-per-min)}}))
+
+                 (with-grid-col 4
+                   (dom/h3 nil "Errors per request")
+                   (om/build chart-component app
+                             {:opts {:data-url (app-endpoint-chart-url (:current-app app)
+                                                                       (:current-endpoint app)
+                                                                       :reqs-per-min)}})))))))
+
 (defn application-dashboard [app owner]
   (reify
     om/IDisplayName
@@ -118,17 +172,24 @@
     (render [_]
       (dom/div #js {:className "app-dashboard"}
                (with-grid-row
+                 (with-grid-col 12
+                   (dom/h2 nil "Application Overview")))
+               
+               (with-grid-row
                  (with-grid-col 4
                    (dom/h3 nil "Time per request")
-                   (om/build chart-component app {:opts {:chart-type :ms-per-req}}))
+                   (om/build chart-component app {:opts {:data-url (app-chart-url (:current-app app)
+                                                                                  :ms-per-req)}}))
 
                  (with-grid-col 4
                    (dom/h3 nil "Requests per minute")
-                   (om/build chart-component app {:opts {:chart-type :reqs-per-min}}))
+                   (om/build chart-component app {:opts {:data-url (app-chart-url (:current-app app)
+                                                                                  :reqs-per-min)}}))
 
                  (with-grid-col 4
                    (dom/h3 nil "Errors per request")
-                   (om/build chart-component app {:opts {:chart-type :errs-per-req}})))
+                   (om/build chart-component app {:opts {:data-url (app-chart-url (:current-app app)
+                                                                                  :errs-per-req)}})))
 
                (with-grid-row
                  (with-grid-col 4
@@ -196,6 +257,9 @@
     om/IRender
     (render [_]
       (condp = (:view app)
+        :app-endpoint-overview
+        (om/build application-endpoint-overview app)
+        
         :app-dashboard
         (om/build application-dashboard app)
 
@@ -205,6 +269,14 @@
 (defn render-breadcrumbs [app owner]
   (letfn [(make-location-list []
             (condp = (:view app)
+              :app-endpoint-overview [{:title "Applications" :url [routes/all-apps]}
+                                      {:title (-> app :current-app :display-name)
+                                       :url [routes/app-dashboard {:id (-> app :current-app :app-id)}]}
+                                      {:title (:current-endpoint app)
+                                       :url [routes/app-endpoint-overview
+                                             {:id (-> app :current-app :app-id)
+                                              :endpoint (:current-endpoint app)}]}]
+              
               :app-dashboard [{:title "Applications" :url [routes/all-apps]}
                               {:title (-> app :current-app :display-name)
                                :url [routes/app-dashboard {:id (-> app :current-app :app-id)}]}]

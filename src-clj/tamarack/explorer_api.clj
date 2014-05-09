@@ -44,6 +44,11 @@
         sorted-aggregate (sort-by (fn [[_ v]] (- v)) aggregate-avg)]
     (edn-response sorted-aggregate)))
 
+(defn application-endpoint-chart [app-id endpoint chart-type from to]
+  (let [data (model/request-single-endpoint-data-by-minute app-id endpoint from to)
+        mapper (chart-map chart-type)]
+    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper d)])))))
+
 (defroutes routes
   (GET "/applications" [] (applications))
   (GET "/applications/:uuid" {{uuid :uuid} :params}
@@ -58,4 +63,11 @@
                               (keyword type)
                               (time-format/parse model/timestamp-format from)
                               (time-format/parse model/timestamp-format to)
-                              (if limit (Integer. limit) nil))))
+                              (if limit (Integer. limit) nil)))
+  (GET "/applications/:uuid/endpoints/:endpoint/chart/:type"
+       {{uuid :uuid endpoint :endpoint type :type from :from to :to} :params}
+       (application-endpoint-chart (str->uuid uuid)
+                                   endpoint
+                                   (keyword type)
+                                   (time-format/parse model/timestamp-format from)
+                                   (time-format/parse model/timestamp-format to))))

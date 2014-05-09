@@ -32,3 +32,14 @@ CREATE TABLE IF NOT EXISTS request_endpoint_by_minute_for_agg (
   total_time counter,
   PRIMARY KEY ((app_id, date_part), timestamp, endpoint)
 );
+
+CREATE TABLE IF NOT EXISTS request_endpoint_by_minute (
+  app_id uuid,
+  date_part text,
+  timestamp timestamp,
+  endpoint text,
+  errors counter,
+  requests counter,
+  total_time counter,
+  PRIMARY KEY ((app_id, date_part), endpoint, timestamp)
+);

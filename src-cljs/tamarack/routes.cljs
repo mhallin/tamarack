@@ -34,6 +34,12 @@
   (merge-query-params query-params
                       {:view :app-dashboard :current-app {:app-id (UUID. id)}}))
 
+(defroute app-endpoint-overview "/applications/:id/:endpoint" [id endpoint query-params]
+  (merge-query-params query-params
+                      {:view :app-endpoint-overview
+                       :current-app {:app-id (UUID. id)}
+                       :current-endpoint endpoint}))
+
 (defn timeslice-query-params []
   (let [timeslice (-> @state/app-state :timeslice)
         [from to] (:window timeslice)]

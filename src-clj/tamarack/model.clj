@@ -82,16 +82,22 @@
          timestamp (time-format/parse timestamp-format timestamp-str)
          timestamp-minute (timestamp-without-minute timestamp)
 
-         query-minute (hayt/update :request_endpoint_by_minute_for_agg
-                                   (hayt/set-columns
-                                    {:total_time (hayt/inc-by total-time)
-                                     :requests (hayt/inc-by requests)
-                                     :errors (hayt/inc-by errors)})
-                                   (hayt/where {:app_id app-id
-                                                :endpoint endpoint
-                                                :timestamp (time-coerce/to-long timestamp-minute)
-                                                :date_part (timestamp-date-part timestamp-minute)}))]
-    (alia/execute session query-minute)))
+         inc-columns (hayt/set-columns
+                      {:total_time (hayt/inc-by total-time)
+                       :requests (hayt/inc-by requests)
+                       :errors (hayt/inc-by errors)})
+         minute-filter (hayt/where {:app_id app-id
+                                    :endpoint endpoint
+                                    :timestamp (time-coerce/to-long timestamp-minute)
+                                    :date_part (timestamp-date-part timestamp-minute)})
+         
+         query-minute-agg (hayt/update :request_endpoint_by_minute_for_agg
+                                       inc-columns minute-filter)
+
+         query-minute (hayt/update :request_endpoint_by_minute
+                                   inc-columns minute-filter)]
+    (alia/execute session query-minute)
+    (alia/execute session query-minute-agg)))
 
 (defn request-data-by-minute [app-id from to]
   (let [from-long (time-coerce/to-long from)
@@ -115,7 +121,17 @@
                                         [<= :timestamp to-long]]))]
     (alia/execute session query)))
 
-
+(defn request-single-endpoint-data-by-minute [app-id endpoint from to]
+  (let [from-long (time-coerce/to-long from)
+        to-long (time-coerce/to-long to)
+        query (hayt/select :request_endpoint_by_minute
+                           (hayt/columns :timestamp :total_time :requests :errors)
+                           (hayt/where [[= :app_id app-id]
+                                        [:in :date_part (dates-between from to)]
+                                        [= :endpoint endpoint]
+                                        [>= :timestamp from-long]
+                                        [<= :timestamp to-long]]))]
+    (alia/execute session query)))
 
 (defn applications []
   (let [query (hayt/select :application)]
