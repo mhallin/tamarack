@@ -19,7 +19,8 @@
 
   :source-paths ["src-clj" "src-cljs"]
 
-  :ring {:handler tamarack.handler/app}
+  :ring {:handler tamarack.handler/app
+         :init tamarack.handler/init}
 
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
