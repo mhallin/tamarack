@@ -12,7 +12,8 @@
                  [net.jpountz.lz4/lz4 "1.2.0"]
                  [org.xerial.snappy/snappy-java "1.1.1-M1"]
                  [com.cemerick/piggieback "0.1.3"]
-                 [secretary "1.1.0"]]
+                 [secretary "1.1.0"]
+                 [org.mortbay.jetty/jetty "6.1.26"]]
 
   :plugins [[lein-ring "0.8.10"]
             [lein-cljsbuild "1.0.3"]]
@@ -43,4 +44,5 @@
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]
-                        [ring-serve "0.1.2"]]}})
+                        [ring-serve "0.1.2"]]}
+   :uberjar {:aot :all}})
