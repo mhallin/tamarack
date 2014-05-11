@@ -22,11 +22,11 @@
   (edn-response (model/application-info app-id)))
 
 (def chart-map
-  {:ms-per-req (fn [{tot :requests time :total_time}]
+  {:ms-per-req (fn [{tot :requests time :total-time}]
                  (if (zero? tot) nil (float (* (/ time tot) USEC->MSEC))))
    :reqs-per-min :requests
    :errs-per-req (fn [{tot :requests errs :errors}] (if (zero? tot) nil (float (/ errs tot))))
-   :total-time #(-> % :total_time (* USEC->MSEC))})
+   :total-time #(-> % :total-time (* USEC->MSEC))})
 
 (defn application-chart [app-id chart-type from to]
   (let [data (model/request-data-by-minute app-id from to)

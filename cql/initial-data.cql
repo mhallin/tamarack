@@ -16,10 +16,9 @@ CREATE TABLE IF NOT EXISTS request_by_minute (
   app_id uuid,
   date_part text,
   timestamp timestamp,
-  errors counter,
-  requests counter,
-  total_time counter,
-  PRIMARY KEY ((app_id, date_part), timestamp)
+  sensor_key text,
+  value counter,
+  PRIMARY KEY ((app_id, date_part), timestamp, sensor_key)
 );
 
 CREATE TABLE IF NOT EXISTS request_endpoint_by_minute_for_agg (
@@ -27,10 +26,9 @@ CREATE TABLE IF NOT EXISTS request_endpoint_by_minute_for_agg (
   date_part text,
   timestamp timestamp,
   endpoint text,
-  errors counter,
-  requests counter,
-  total_time counter,
-  PRIMARY KEY ((app_id, date_part), timestamp, endpoint)
+  sensor_key text,
+  value counter,
+  PRIMARY KEY ((app_id, date_part), timestamp, endpoint, sensor_key)
 );
 
 CREATE TABLE IF NOT EXISTS request_endpoint_by_minute (
@@ -38,8 +36,7 @@ CREATE TABLE IF NOT EXISTS request_endpoint_by_minute (
   date_part text,
   timestamp timestamp,
   endpoint text,
-  errors counter,
-  requests counter,
-  total_time counter,
-  PRIMARY KEY ((app_id, date_part), endpoint, timestamp)
+  sensor_key text,
+  value counter,
+  PRIMARY KEY ((app_id, date_part), endpoint, timestamp, sensor_key)
 );
