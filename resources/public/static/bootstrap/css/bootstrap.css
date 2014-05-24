@@ -1,4 +1,4 @@
-@import url("//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic");
+@import url("/static/fira-sans/fira-sans.css");
 /*!
  * Bootswatch v3.1.1+1
  * Homepage: http://bootswatch.com
@@ -273,7 +273,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
   color: #555555;
@@ -690,7 +690,7 @@ code,
 kbd,
 pre,
 samp {
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: "Fira Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 code {
   padding: 2px 4px;
