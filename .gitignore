@@ -5,3 +5,4 @@ out
 target
 resources/public/static/js
 resources/public/static/js-min
+.lein-*

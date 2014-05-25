@@ -16,7 +16,8 @@
                  [org.mortbay.jetty/jetty "6.1.26"]]
 
   :plugins [[lein-ring "0.8.10"]
-            [lein-cljsbuild "1.0.3"]]
+            [lein-cljsbuild "1.0.3"]
+            [lein-ancient "0.5.5"]]
 
   :source-paths ["src-clj" "src-cljs"]
 
