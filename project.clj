@@ -1,9 +1,9 @@
 (defproject tamarack "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.clojure/clojurescript "0.0-2202"]
+                 [org.clojure/clojurescript "0.0-2227"]
                  [org.clojure/core.async "0.1.298.0-2a82a1-alpha"]
-                 [om "0.6.2"]
-                 [compojure "1.1.6"]
+                 [om "0.6.3"]
+                 [compojure "1.1.8"]
                  [clj-json "0.5.3"]
                  [clj-time "0.7.0"]
                  [cc.qbits/alia "2.0.0-rc1"]
@@ -12,7 +12,7 @@
                  [net.jpountz.lz4/lz4 "1.2.0"]
                  [org.xerial.snappy/snappy-java "1.1.1-M1"]
                  [com.cemerick/piggieback "0.1.3"]
-                 [secretary "1.1.0"]
+                 [secretary "1.1.1"]
                  [org.mortbay.jetty/jetty "6.1.26"]]
 
   :plugins [[lein-ring "0.8.10"]
