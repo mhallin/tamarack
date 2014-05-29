@@ -43,8 +43,8 @@
           existing (select request-by-minute
                            (where {:app_id app-id :timestamp sql-timestamp}))]
       (when (empty? existing)
-        (exec-raw ["INSERT INTO request_by_minute VALUES (?, ?, '')"
-                   [app-id (time-coerce/to-sql-time timestamp)]])))))
+        (exec-raw ["INSERT INTO request_by_minute VALUES (?, ?, '', ?, ?)"
+                   [app-id (time-coerce/to-sql-time timestamp) 0 0]])))))
 
 (defn prepare-endpoint-minute-data [app-id timestamp endpoint]
   (with-lock request-endpoint-by-minute :exclusive
@@ -54,31 +54,46 @@
                                    :timestamp sql-timestamp
                                    :endpoint endpoint}))]
       (when (empty? existing)
-        (exec-raw ["INSERT INTO request_endpoint_by_minute VALUES (?, ?, ?, '')"
-                   [app-id endpoint (time-coerce/to-sql-time timestamp)]])))))
+        (exec-raw ["INSERT INTO request_endpoint_by_minute VALUES (?, ?, ?, '', ?, ?)"
+                   [app-id endpoint (time-coerce/to-sql-time timestamp) 0 0]])))))
 
 (defn prepare-minute-data [app-id timestamp endpoint]
   (prepare-global-minute-data app-id timestamp)
   (prepare-endpoint-minute-data app-id timestamp endpoint))
 
-(defn increment-minute-data [app-id timestamp endpoint key val]
+(defn increment-minute-data [app-id timestamp endpoint request-count error-count]
+  (let [sql-timestamp (time-coerce/to-sql-time timestamp)]
+    (transaction
+     (exec-raw ["UPDATE request_by_minute
+                   SET request_count = request_count + ?,
+                       error_count = error_count + ?
+                  WHERE app_id = ? AND timestamp = ?"
+                [request-count error-count app-id sql-timestamp]])
+     (exec-raw ["UPDATE request_endpoint_by_minute
+                   SET request_count = request_count + ?,
+                       error_count = error_count + ?
+                  WHERE app_id = ? AND timestamp = ? AND endpoint = ?"
+                [request-count error-count app-id sql-timestamp endpoint]]))))
+
+(defn increment-minute-sensor-value [app-id timestamp endpoint key val]
   (let [sql-timestamp (time-coerce/to-sql-time timestamp)]
     (transaction
      (exec-raw ["UPDATE request_by_minute
                 SET sensor_data = incr_key(sensor_data, ?, ?)
                 WHERE app_id = ? AND timestamp = ?"
-                [key val app-id (time-coerce/to-sql-time timestamp)]])
+                [key val app-id sql-timestamp]])
      (exec-raw ["UPDATE request_endpoint_by_minute
                 SET sensor_data = incr_key(sensor_data, ?, ?)
                 WHERE app_id = ? AND timestamp = ? AND endpoint = ?"
-                [key val app-id (time-coerce/to-sql-time timestamp) endpoint]]))))
+                [key val app-id sql-timestamp endpoint]]))))
 
-(defn process-minute-data [app-name timestamp-str endpoint sensor-data]
+(defn process-minute-data [app-name timestamp-str endpoint request-count error-count sensor-data]
   (let [timestamp (time-format/parse timestamp-format timestamp-str)
         app-id (app-name->id app-name)]
     (prepare-minute-data app-id timestamp endpoint)
+    (increment-minute-data app-id timestamp endpoint request-count error-count)
     (doseq [[key val] (stringify-keys sensor-data)]
-      (increment-minute-data app-id timestamp endpoint key val))))
+      (increment-minute-sensor-value app-id timestamp endpoint key val))))
 
 (defn sensor-data-by-minute [app-name from to]
   (let [sql-from (time-coerce/to-sql-time from)
@@ -90,6 +105,8 @@
                                   (= :app_id app-id))))]
     (map (fn [row]
            {:timestamp (:timestamp row)
+            :request-count (:request_count row)
+            :error-count (:error_count row)
             :sensor-data (-> row :sensor_data util/db->clj util/db->sensor-data)})
          query)))
 
@@ -104,6 +121,8 @@
     (map (fn [row]
            {:timestamp (:timestamp row)
             :endpoint (:endpoint row)
+            :request-count (:request_count row)
+            :error-count (:error_count row)
             :sensor-data (-> row :sensor_data util/db->clj util/db->sensor-data)})
          query)))
 
@@ -118,6 +137,8 @@
                                   (= :endpoint endpoint))))]
     (map (fn [row]
            {:timestamp (:timestamp row)
+            :request-count (:request_count row)
+            :error-count (:error_count row)
             :sensor-data (-> row :sensor_data util/db->clj util/db->sensor-data)})
          query)))
 

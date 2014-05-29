@@ -27,6 +27,8 @@
       (model/process-minute-data (:app-name body)
                                  (:timestamp minute-data)
                                  (:endpoint minute-data)
+                                 (:request-count minute-data)
+                                 (:error-count minute-data)
                                  (:sensor-data minute-data)))
     {:status 200
      :headers {"Content-Type" "application/json; charset=UTF-8"}

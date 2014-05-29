@@ -22,16 +22,21 @@
   (edn-response (model/application-info app-name)))
 
 (def chart-map
-  {:ms-per-req (fn [{tot :request-count time :total-time}]
-                 (if (zero? tot) nil (float (* (/ time tot) USEC->MSEC))))
+  {:ms-per-req (fn [row]
+                 (let [reqs (:request-count row)
+                       time (-> row :sensor-data :total-time)]
+                   (if (zero? reqs) nil (float (* (/ time reqs) USEC->MSEC)))))
    :reqs-per-min :request-count
-   :errs-per-req (fn [{tot :request-count errs :error-count}] (if (zero? tot) nil (float (/ errs tot))))
-   :total-time #(-> % :total-time (* USEC->MSEC))})
+   :errs-per-req (fn [row]
+                   (let [reqs (:request-count row)
+                         errs (:error-count row)]
+                     (if (zero? reqs) nil (float (/ errs reqs)))))
+   :total-time #(-> % :sensor-data :total-time (* USEC->MSEC))})
 
 (defn application-chart [app-name chart-type from to]
   (let [data (model/sensor-data-by-minute app-name from to)
         mapper (chart-map chart-type)]
-   (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper (:sensor-data d))])))))
+    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper d)])))))
 
 (defn aggregate-db-data [mapper agg val]
   (let [endpoint (:endpoint val)
@@ -41,7 +46,7 @@
 
 (defn application-aggregate [app-name chart-type from to limit]
   (let [data (model/sensor-data-by-endpoint-by-minute app-name from to)
-        mapper #((chart-map chart-type) (:sensor-data %))
+        mapper (chart-map chart-type)
         aggregate (reduce (partial aggregate-db-data mapper) {} data)
         aggregate-avg (map (fn [[k [v n]]] [k (/ v n)]) aggregate)
         sorted-aggregate (sort-by (fn [[_ v]] (- v)) aggregate-avg)]
@@ -50,7 +55,7 @@
 (defn application-endpoint-chart [app-name endpoint chart-type from to]
   (let [data (model/endpoint-sensor-data-by-minute app-name endpoint from to)
         mapper (chart-map chart-type)]
-    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper (:sensor-data d))])))))
+    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper d)])))))
 
 (defroutes routes
   (GET "/applications" [] (applications))
