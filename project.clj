@@ -10,7 +10,8 @@
                  [org.mortbay.jetty/jetty "6.1.26"]
                  [korma "0.3.0-RC5"]
                  [org.postgresql/postgresql "9.2-1002-jdbc4"]
-                 [ragtime "0.3.7"]]
+                 [ragtime "0.3.7"]
+                 [sablono "0.2.17"]]
 
   :plugins [[lein-ring "0.8.10"]
             [lein-cljsbuild "1.0.3"]

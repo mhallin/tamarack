@@ -22,10 +22,10 @@
 
         y-ticks 5]
     (canvas/with-canvas canvas
-      (canvas/with-translate margin-left margin-top
-        (canvas/with-props {:fill "#fff"}
+      (canvas/with-props {:fill "#fff"}
           (.fillRect ctx 0 0 canvas-width canvas-height))
 
+      (canvas/with-translate margin-left margin-top
         (canvas/with-props {:begin-path true
                             :stroke "rgb(187, 187, 187)"
                             :fill "rgb(117, 117, 117)"
