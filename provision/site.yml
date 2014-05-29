@@ -1,7 +1,6 @@
 - hosts: dbservers
   roles:
-    - jdk
-    - cassandra
+    - postgresql
 
 - hosts: devservers
   roles:

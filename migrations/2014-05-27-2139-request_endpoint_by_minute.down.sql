@@ -1,0 +1,1 @@
+DROP TABLE request_endpoint_by_minute;

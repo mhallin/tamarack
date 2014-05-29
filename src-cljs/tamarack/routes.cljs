@@ -32,12 +32,12 @@
 
 (defroute app-dashboard "/applications/:id" [id query-params]
   (merge-query-params query-params
-                      {:view :app-dashboard :current-app {:app-id (UUID. id)}}))
+                      {:view :app-dashboard :current-app {:app-id id}}))
 
 (defroute app-endpoint-overview "/applications/:id/:endpoint" [id endpoint query-params]
   (merge-query-params query-params
                       {:view :app-endpoint-overview
-                       :current-app {:app-id (UUID. id)}
+                       :current-app {:app-id id}
                        :current-endpoint endpoint}))
 
 (defn timeslice-query-params []

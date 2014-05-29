@@ -18,20 +18,20 @@
 (defn applications []
   (edn-response (model/applications)))
 
-(defn application-info [app-id]
-  (edn-response (model/application-info app-id)))
+(defn application-info [app-name]
+  (edn-response (model/application-info app-name)))
 
 (def chart-map
-  {:ms-per-req (fn [{tot :requests time :total-time}]
+  {:ms-per-req (fn [{tot :request-count time :total-time}]
                  (if (zero? tot) nil (float (* (/ time tot) USEC->MSEC))))
-   :reqs-per-min :requests
-   :errs-per-req (fn [{tot :requests errs :errors}] (if (zero? tot) nil (float (/ errs tot))))
+   :reqs-per-min :request-count
+   :errs-per-req (fn [{tot :request-count errs :error-count}] (if (zero? tot) nil (float (/ errs tot))))
    :total-time #(-> % :total-time (* USEC->MSEC))})
 
-(defn application-chart [app-id chart-type from to]
-  (let [data (model/request-data-by-minute app-id from to)
+(defn application-chart [app-name chart-type from to]
+  (let [data (model/sensor-data-by-minute app-name from to)
         mapper (chart-map chart-type)]
-    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper d)])))))
+   (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper (:sensor-data d))])))))
 
 (defn aggregate-db-data [mapper agg val]
   (let [endpoint (:endpoint val)
@@ -39,37 +39,37 @@
         [agg-tot agg-count] (or (agg endpoint) [0 0])]
     (merge agg {endpoint [(+ agg-tot new-val) (+ agg-count 1)]})))
 
-(defn application-aggregate [app-id chart-type from to limit]
-  (let [data (model/request-endpoint-data-by-minute app-id from to)
-        mapper (chart-map chart-type)
+(defn application-aggregate [app-name chart-type from to limit]
+  (let [data (model/sensor-data-by-endpoint-by-minute app-name from to)
+        mapper #((chart-map chart-type) (:sensor-data %))
         aggregate (reduce (partial aggregate-db-data mapper) {} data)
         aggregate-avg (map (fn [[k [v n]]] [k (/ v n)]) aggregate)
         sorted-aggregate (sort-by (fn [[_ v]] (- v)) aggregate-avg)]
     (edn-response sorted-aggregate)))
 
-(defn application-endpoint-chart [app-id endpoint chart-type from to]
-  (let [data (model/request-single-endpoint-data-by-minute app-id endpoint from to)
+(defn application-endpoint-chart [app-name endpoint chart-type from to]
+  (let [data (model/endpoint-sensor-data-by-minute app-name endpoint from to)
         mapper (chart-map chart-type)]
-    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper d)])))))
+    (edn-response (into {} (for [d data] [(time-coerce/to-long (:timestamp d)) (mapper (:sensor-data d))])))))
 
 (defroutes routes
   (GET "/applications" [] (applications))
-  (GET "/applications/:uuid" {{uuid :uuid} :params}
-       (application-info (str->uuid uuid)))
-  (GET "/applications/:uuid/chart/:type" {{uuid :uuid type :type from :from to :to} :params}
-       (application-chart (str->uuid uuid)
+  (GET "/applications/:app-name" {{app-name :app-name} :params}
+       (application-info app-name))
+  (GET "/applications/:app-name/chart/:type" {{app-name :app-name type :type from :from to :to} :params}
+       (application-chart app-name
                           (keyword type)
                           (time-format/parse model/timestamp-format from)
                           (time-format/parse model/timestamp-format to)))
-  (GET "/applications/:uuid/aggregate/:type" {{uuid :uuid type :type from :from to :to limit :limit} :params}
-       (application-aggregate (str->uuid uuid)
+  (GET "/applications/:app-name/aggregate/:type" {{app-name :app-name type :type from :from to :to limit :limit} :params}
+       (application-aggregate app-name
                               (keyword type)
                               (time-format/parse model/timestamp-format from)
                               (time-format/parse model/timestamp-format to)
                               (if limit (Integer. limit) nil)))
-  (GET "/applications/:uuid/endpoints/:endpoint/chart/:type"
-       {{uuid :uuid endpoint :endpoint type :type from :from to :to} :params}
-       (application-endpoint-chart (str->uuid uuid)
+  (GET "/applications/:app-name/endpoints/:endpoint/chart/:type"
+       {{app-name :app-name endpoint :endpoint type :type from :from to :to} :params}
+       (application-endpoint-chart app-name
                                    endpoint
                                    (keyword type)
                                    (time-format/parse model/timestamp-format from)

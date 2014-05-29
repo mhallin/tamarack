@@ -1,0 +1,33 @@
+- name: Install PostgreSQL 9.3
+  sudo: true
+  apt: pkg={{ item }}
+       state=latest
+  with_items:
+    - postgresql-9.3
+    - python-psycopg2
+
+- name: Copy PostgreSQL authentication config
+  sudo: true
+  copy: src=pg_hba.conf
+        dest=/etc/postgresql/9.3/main/pg_hba.conf
+  register: pghba_copy
+
+- name: Restart PostgreSQL
+  sudo: true
+  service: name=postgresql
+           state=restarted
+  when: pghba_copy.changed
+
+- name: Ensure PostgreSQL is started and enabled
+  sudo: true
+  service: name=postgresql
+           state=started
+           enabled=yes
+
+- name: Create PostgreSQL user
+  postgresql_user: name={{ ansible_ssh_user }}
+
+- name: Create PostgreSQL database
+  postgresql_db: name=tamarack
+                 owner={{ ansible_ssh_user }}
+                 encoding=UTF-8

@@ -3,14 +3,33 @@
             [tamarack.model :as model]
             [tamarack.util :as util]))
 
+;;; Process JSON from Collector:
+;;
+;; {
+;;   "app_name": app_name
+;;   "by_minute": [
+;;     {
+;;       "timestamp": timestamp,
+;;       "endpoint": endpoint,
+;;       "sensor_data": {
+;;         sensor_key: sensor_value
+;;       }
+;;     }
+;;   ]
+;; }
+;;
+;; 1. Find app_id from app_name
+;; 2. Update/insert request_endpoint_by_minute
+;; 3. Update/insert request_by_minute
 (defn handle-request-data [body-stream]
-  (let [body (util/str->json (slurp body-stream))
-        {app-name :app-name data :data endpoints :endpoints} body
-        app-id (model/app-name->id app-name)]
-    (doall (map #(model/process-request-data app-id %1) data))
-    (doall (map #(model/process-endpoint-data app-id %1) endpoints))
+  (let [body (util/str->json (slurp body-stream))]
+    (doseq [minute-data (:by-minute body)]
+      (model/process-minute-data (:app-name body)
+                                 (:timestamp minute-data)
+                                 (:endpoint minute-data)
+                                 (:sensor-data minute-data)))
     {:status 200
-     :headers {"Conttent-Type" "application/json; charset=UTF-8"}
+     :headers {"Content-Type" "application/json; charset=UTF-8"}
      :body (util/json->str {:status :ok})}))
 
 (defroutes routes

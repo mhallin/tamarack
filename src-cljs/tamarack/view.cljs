@@ -213,7 +213,7 @@
 (defn all-apps [app owner]
   (letfn [(app-link-clicked [e row]
             (.preventDefault e)
-            (routes/navigate-to routes/app-dashboard {:id (:app-id row)}))
+            (routes/navigate-to routes/app-dashboard {:id (:name row)}))
           (render-row [row]
             (dom/tr nil
                     (dom/td nil
