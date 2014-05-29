@@ -7,6 +7,7 @@
             [tamarack.xhr :as xhr]
             [tamarack.state :as state]
             [tamarack.routes :as routes]
+            [tamarack.canvas :as canvas :include-macros true]
             [goog.date.duration :as gduration]))
 
 (defn app-chart-url [app chart-type]
@@ -26,53 +27,64 @@
     (string/join "/" comps)))
 
 (defn chart-component [app owner {:keys [data-url] :as opts}]
-  (let [canvas-width 293
-        canvas-height 180]
-   (letfn [(draw-my-chart []
-             (let [[from to] (-> app :timeslice :window)
-                   canvas (.getDOMNode owner)
-                   ctx (.getContext canvas "2d")]
-               (when (= (.-devicePixelRatio js/window) 2)
-                 (.setAttribute canvas "width" (* 2 canvas-width))
-                 (.setAttribute canvas "height" (* 2 canvas-height))
-                 (.setAttribute canvas "style" (str "width: " canvas-width "px;"
-                                                    "height" canvas-height "px;"))
-                 (.scale ctx 2 2))
-               (chart/draw-data canvas ctx canvas-width canvas-height
-                                (om/get-state owner :data)
-                                from to)))
-           (fetch-data [app]
-             (let [[from to] (-> app :timeslice :window)
-                   url (str data-url
-                            "?from=" (util/inst->iso from)
-                            "&to=" (util/inst->iso to))]
-               (xhr/send-edn {:method :get
-                              :url url
-                              :on-complete
-                              (fn [res]
-                                (om/set-state! owner :data res))})))]
-     (reify
-       om/IDisplayName
-       (display-name [_] "Chart")
+  (letfn [(draw-my-chart []
+            (let [[from to] (-> app :timeslice :window)
+                  canvas (.getDOMNode owner)
+                  canvas-width (.-clientWidth canvas)
+                  canvas-height (.-clientHeight canvas)
+                  ctx (.getContext canvas "2d")
+                  scale-factor (or (.-devicePixelRatio js/window) 1)]
+              (canvas/with-canvas canvas
+                (canvas/with-scale scale-factor scale-factor
+                  (chart/draw-data ctx canvas-width canvas-height
+                                   (om/get-state owner :data)
+                                   from to)
+                  (.restore ctx)))))
+          (fetch-data [app]
+            (let [[from to] (-> app :timeslice :window)
+                  url (str data-url
+                           "?from=" (util/inst->iso from)
+                           "&to=" (util/inst->iso to))]
+              (xhr/send-edn {:method :get
+                             :url url
+                             :on-complete
+                             (fn [res]
+                               (om/set-state! owner :data res))})))
+          (refresh-canvas-size []
+            (let [canvas (.getDOMNode owner)
+                  parent (.-parentNode canvas)
+                  [elem-width _] (util/elem-content-size parent)
+                  elem-height (* elem-width 0.6)
+                  scale-factor (or (.-devicePixelRatio js/window) 1)]
+              (.setAttribute canvas "style"
+                             (str "width: " elem-width "px; "
+                                  "height: " elem-height "px; "))
+              (.setAttribute canvas "width" (* scale-factor elem-width))
+              (.setAttribute canvas "height" (* scale-factor elem-height))))]
+    (reify
+      om/IDisplayName
+      (display-name [_] "Chart")
 
-       om/IWillMount
-       (will-mount [_]
-         (fetch-data app))
+      om/IWillMount
+      (will-mount [_]
+        (fetch-data app))
 
-       om/IWillUpdate
-       (will-update [_ next-props next-state]
-         (when-not (= (:timeslice next-props) (:timeslice app))
-           (fetch-data next-props)))
-       
-       om/IRender
-       (render [_]
-         (html [:canvas {:width (str canvas-width :height (str canvas-height))}]))
-       
-       om/IDidMount
-       (did-mount [_] (draw-my-chart))
-       
-       om/IDidUpdate
-       (did-update [_ _ _] (draw-my-chart))))))
+      om/IWillUpdate
+      (will-update [_ next-props next-state]
+        (when-not (= (:timeslice next-props) (:timeslice app))
+          (fetch-data next-props)))
+      
+      om/IRender
+      (render [_]
+        (html [:canvas]))
+      
+      om/IDidMount
+      (did-mount [_]
+        (refresh-canvas-size)
+        (draw-my-chart))
+      
+      om/IDidUpdate
+      (did-update [_ _ _] (draw-my-chart)))))
 
 (defn agg-table-component [app owner {:keys [agg-type round-fn unit] :as opts}]
   (letfn [(fetch-data [app]

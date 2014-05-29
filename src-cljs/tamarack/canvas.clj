@@ -15,6 +15,11 @@
      (.translate *ctx* ~x ~y)
      ~@body))
 
+(defmacro with-scale [x y & body]
+  `(with-saved-context
+     (.scale *ctx* ~x ~y)
+     ~@body))
+
 (defmacro with-props [styles & body]
   (let [fill-sym (gensym "fill")
         stroke-sym (gensym "stroke")

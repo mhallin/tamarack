@@ -1,6 +1,17 @@
 (ns tamarack.util
   (:require [clojure.string :as string]))
 
+(defn elem-content-size [elem]
+  (let [style (.getComputedStyle js/window elem nil)
+        pl (or (js/parseInt (.getPropertyValue style "padding-left") 10) 0)
+        pr (or (js/parseInt (.getPropertyValue style "padding-right") 10) 0)
+        pt (or (js/parseInt (.getPropertyValue style "padding-top") 10) 0)
+        pb (or (js/parseInt (.getPropertyValue style "padding-bottom") 10) 0)
+        cw (.-clientWidth elem)
+        ch (.-clientHeight elem)]
+    [(- cw pl pr)
+     (- ch pt pb)]))
+
 (defn minutes-between [from to]
   (loop [now from
          minutes []]
