@@ -10,7 +10,7 @@ and regressions.
 Tamarack consists of three parts: a *collector library* which resides
 in your application. The collector will feed the *receiver server*
 data, which is then presented in the *explorer*. The data is stored in
-Cassandra_ and can be scaled up depending on the needs of your
+PostgreSQL_ and can be scaled up depending on the needs of your
 application. The collector is designed to cause minimal overhead in
 your application.
 
@@ -63,7 +63,7 @@ everything you need:
 
 Open up http://localhost:3000 in a browser and everything should work.
 
-Note that the Vagrantfile sets up the virtual machine to have 4 GB
+Note that the Vagrantfile sets up the virtual machine to have 2 GB
 memory, as Java seems to consume a lot of memory. Be sure to have a
 lot of memory around, or run the services locally instead.
 
@@ -79,7 +79,7 @@ Collector with your application. If you have a Django application, you
 can use the `Python Tamarack Collector`_.
 
 
-.. _Cassandra: http://cassandra.apache.org/
+.. _PostgreSQL: http://www.postgresql.org/
 .. _Clojure: http://clojure.org/
 .. _ClojureScript: https://github.com/clojure/clojurescript
 .. _React.js: http://facebook.github.io/react/
