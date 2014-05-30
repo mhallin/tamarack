@@ -143,7 +143,7 @@
     (render [_]
       (html
        [:div.app-endpoint-overview
-        [:div.row [:div.col-md-12 [:h2 "Application Endpoint Overview"]]]
+        [:div.row [:div.col-md-12 [:h2 "Endpoint Overiew for \"" (:current-endpoint app) "\""]]]
 
         [:div.row
          [:div.col-md-4
@@ -174,7 +174,7 @@
     (render [_]
       (html
        [:div.app-dashboard
-        [:div.row [:div.col-md-12 [:h2 "Application Overview"]]]
+        [:div.row [:div.col-md-12 [:h2 "Application Overview for " (-> app :current-app :display-name)]]]
 
         [:div.row
          [:div.col-md-4
