@@ -66,10 +66,18 @@
 (defn remove-route-defaults [route]
   (update-in route [:query-params] remove-default-query-params))
 
+(defn cleanup-query-params [route]
+  (if (-> route :query-params empty?)
+    (dissoc route :query-params)
+    route))
+
 (defn navigate-to
   ([route arg]
-     (let [url (route (remove-route-defaults
-                       (merge {:query-params (timeslice-query-params)} arg)))]
+     (let [url (->> arg
+                    (merge {:query-params (timeslice-query-params)})
+                    remove-route-defaults
+                    cleanup-query-params
+                    route)]
        (.setToken history/history (subs url 1))))
   ([route]
      (navigate-to route {})))
@@ -84,5 +92,7 @@
         new-query-params (remove-default-query-params
                           (merge query-params (timeslice-query-params)))
         new-query-string (secretary/encode-query-params new-query-params)
-        token (string/join "?" [path new-query-string])]
+        token (if (empty? new-query-string)
+                path
+                (string/join "?" [path new-query-string]))]
     (.setToken history/history token)))
