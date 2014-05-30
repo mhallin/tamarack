@@ -6,17 +6,38 @@
 
 (def MAIN-FONT "\"Source Sans Pro\",\"Helvetica Neue\",Helvetica,Arial,sans-serif")
 
-(defn draw-data [ctx canvas-width canvas-height src-data from to]
+(defn- all-keys-in-data [data]
+  (sort (set (mapcat keys (vals data)))))
+
+(def key-colors
+  ["rgba(46, 198, 255, 0.850)"
+   "rgba(112, 191, 64, 0.850)"
+   "rgba(255, 170, 65, 0.850)"
+   "rgba(252, 89, 55, 0.900)"
+   "rgba(88, 98, 195, 0.850)"])
+
+
+(defn make-base-levels [key-order data]
+  (letfn [(incremental-sum [map]
+            (first (reduce (fn [[acc sum] [key val]]
+                             [(assoc acc key sum)
+                              (+ sum val)])
+                           [{} 0]
+                           map)))]
+    (zipmap (keys data) (map incremental-sum (vals data)))))
+
+(defn draw-data [ctx canvas-width canvas-height data from to]
   (let [margin-left 40
         margin-right 30
         margin-top 20
         margin-bottom 20
         width (- canvas-width margin-left margin-right)
         height (- canvas-height margin-top margin-bottom)
-        data (zipmap (keys src-data) (map (fn [breakdown] (reduce + 0 (vals breakdown))) (vals src-data)))
+        all-keys (all-keys-in-data data)
 
         minutes (util/minutes-between from to)
-        max-data (apply max 0 (map (fn [[_ v]] v) data))
+        base-levels (make-base-levels all-keys data)
+        max-data (apply max 0 (mapcat (fn [[_ v]] (vals v)) data))
         total-minutes (- (count minutes) 1)
         step-width (/ width total-minutes)
         step-height (if (zero? max-data) 0 (/ height max-data))
@@ -45,16 +66,17 @@
             (canvas/fill-text tick-val-round text-x text-y)))
         (canvas/stroke))
 
-      (canvas/with-props {:begin-path true
-                          :fill "rgba(46, 198, 255, 0.850)"}
-        (canvas/move-to 0 height)
-
-        (letfn [(draw-single-point [i t]
-                  (when data
-                    (canvas/line-to (* i step-width)
-                                    (- height (* (data t) step-height)))))]
-          (doall (map-indexed draw-single-point minutes)))
-
-        (canvas/line-to width height)
-        (canvas/fill)))))
+      (letfn [(draw-single-point [key i t]
+                (let [x (* i step-width)
+                      y (- height (* (key (data t)) step-height))]
+                  [x y]))
+              (draw-inverse-point [key i t]
+                (let [x (* (- (count minutes) i 1) step-width)
+                      y (- height (* (key (base-levels t)) step-height))]
+                  [x y]))]
+        (doseq [[key color] (map vector all-keys (cycle key-colors))]
+          (let [polygon {:fill color
+                         :points (concat (map-indexed (partial draw-single-point key) minutes)
+                                         (map-indexed (partial draw-inverse-point key) (reverse minutes)))}]
+            (canvas/draw-polygon polygon)))))))
 

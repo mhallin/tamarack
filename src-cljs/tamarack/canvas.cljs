@@ -1,5 +1,5 @@
 (ns tamarack.canvas
-  (:require-macros [tamarack.canvas :refer [with-canvas]]))
+  (:require-macros [tamarack.canvas :refer [with-props]]))
 
 (def ^:dynamic *ctx* nil)
 
@@ -10,3 +10,12 @@
 
 (defn stroke [] (.stroke *ctx*))
 (defn fill [] (.fill *ctx*))
+
+(defn draw-polygon [{:keys [fill points]}]
+  (letfn [(draw-point [i [x y]]
+            (if (= i 0)
+              (move-to x y)
+              (line-to x y)))]
+    (with-props {:fill fill :begin-path true}
+      (doall (map-indexed draw-point points))
+      (when fill (tamarack.canvas/fill)))))
