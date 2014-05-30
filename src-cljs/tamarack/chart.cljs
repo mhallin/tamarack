@@ -37,7 +37,7 @@
 
         minutes (util/minutes-between from to)
         base-levels (make-base-levels all-keys data)
-        max-data (apply max 0 (mapcat (fn [[_ v]] (vals v)) data))
+        max-data (apply max 0 (map (fn [[_ v]] (reduce + 0 (vals v))) data))
         total-minutes (- (count minutes) 1)
         step-width (/ width total-minutes)
         step-height (if (zero? max-data) 0 (/ height max-data))
@@ -68,7 +68,7 @@
 
       (letfn [(draw-single-point [key i t]
                 (let [x (* i step-width)
-                      y (- height (* (key (data t)) step-height))]
+                      y (- height (* (+ (key (base-levels t)) (key (data t))) step-height))]
                   [x y]))
               (draw-inverse-point [key i t]
                 (let [x (* (- (count minutes) i 1) step-width)
