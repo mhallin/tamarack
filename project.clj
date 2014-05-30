@@ -10,6 +10,7 @@
                  [org.mortbay.jetty/jetty "6.1.26"]
                  [korma "0.3.0-RC5"]
                  [org.postgresql/postgresql "9.2-1002-jdbc4"]
+                 [org.clojure/java.jdbc "0.3.2"]
                  [ragtime "0.3.7"]
                  [sablono "0.2.17"]]
 
