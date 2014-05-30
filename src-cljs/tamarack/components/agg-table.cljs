@@ -21,17 +21,21 @@
                    (fn [res]
                      (om/set-state! owner :data res))})))
 
+(defn- endpoint-url [app endpoint]
+  (routes/url-of routes/app-endpoint-overview
+                 {:id (-> app :current-app :app-id) :endpoint endpoint}))
+
 (defn- goto-endpoint [app endpoint e]
   (.preventDefault e)
   (routes/navigate-to routes/app-endpoint-overview
-                      {:id (-> @app :current-app :app-id)
-                       :endpoint endpoint}))
+                      {:id (-> @app :current-app :app-id) :endpoint endpoint}))
 
 (defn- render-row [app round-fn unit [endpoint value]]
   (html
    [:tr {:key endpoint}
     [:td [:a
-          {:href "#" :onClick (partial goto-endpoint app endpoint)}
+          {:href (endpoint-url app endpoint)
+           :onClick (partial goto-endpoint app endpoint)}
           endpoint]]
     [:td.num-col (str (round-fn value) unit)]]))
 

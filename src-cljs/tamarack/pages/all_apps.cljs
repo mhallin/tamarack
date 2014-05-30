@@ -5,6 +5,9 @@
             [tamarack.routes :as routes]
             [tamarack.xhr :as xhr]))
 
+(defn- app-url [row]
+  (routes/url-of routes/app-dashboard {:id (:name row)}))
+
 (defn- app-link-clicked [e row]
   (.preventDefault e)
   (routes/navigate-to routes/app-dashboard {:id (:name row)}))
@@ -13,7 +16,7 @@
   (html
    [:tr {:key (:name row)}
     [:td [:a
-          {:href "#" :onClick #(app-link-clicked % row)}
+          {:href (app-url row) :onClick #(app-link-clicked % row)}
           (:display-name row)]]]))
 
 (defn page [app owner]

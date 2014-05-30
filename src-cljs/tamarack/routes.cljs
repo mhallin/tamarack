@@ -71,13 +71,19 @@
     (dissoc route :query-params)
     route))
 
+(defn url-of
+  ([route arg]
+     (->> arg
+          (merge {:query-params (timeslice-query-params)})
+          remove-route-defaults
+          cleanup-query-params
+          route))
+  ([route]
+     (url-of route {})))
+
 (defn navigate-to
   ([route arg]
-     (let [url (->> arg
-                    (merge {:query-params (timeslice-query-params)})
-                    remove-route-defaults
-                    cleanup-query-params
-                    route)]
+     (let [url (url-of route arg)]
        (.setToken history/history (subs url 1))))
   ([route]
      (navigate-to route {})))
