@@ -6,13 +6,14 @@
 
 (def MAIN-FONT "\"Source Sans Pro\",\"Helvetica Neue\",Helvetica,Arial,sans-serif")
 
-(defn draw-data [ctx canvas-width canvas-height data from to]
+(defn draw-data [ctx canvas-width canvas-height src-data from to]
   (let [margin-left 40
         margin-right 30
         margin-top 20
         margin-bottom 20
         width (- canvas-width margin-left margin-right)
         height (- canvas-height margin-top margin-bottom)
+        data (zipmap (keys src-data) (map (fn [breakdown] (reduce + 0 (vals breakdown))) (vals src-data)))
 
         minutes (util/minutes-between from to)
         max-data (apply max 0 (map (fn [[_ v]] v) data))

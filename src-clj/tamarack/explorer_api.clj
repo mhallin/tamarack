@@ -10,6 +10,9 @@
 (defn str->uuid [s]
   (java.util.UUID/fromString s))
 
+(defn mapvals [f m]
+  (zipmap (keys m) (map f (vals m))))
+
 (defn edn-response [data]
   {:status 200
    :headers {"Content-Type" "application/edn; charset=UTF-8"}
@@ -21,17 +24,26 @@
 (defn application-info [app-name]
   (edn-response (model/application-info app-name)))
 
+(defn- ms-per-req-mapper [{:keys [sensor-data request-count]}]
+  (letfn [(val-per-req [x]
+            (if (zero? request-count) nil (float (* (/ x request-count) USEC->MSEC))))]
+    (mapvals val-per-req sensor-data)))
+
+(defn- reqs-per-min-mapper [{:keys [request-count]}]
+  {:request-count request-count})
+
+(defn- errs-per-req-mapper [{:keys [error-count request-count]}]
+  {:error-count (if (zero? request-count) nil (float (/ error-count request-count)))})
+
+(defn- total-time-mapper [{:keys [sensor-data]}]
+  (let [sum (reduce + 0 (vals sensor-data))]
+    {:total-time (float (* sum USEC->MSEC))}))
+
 (def chart-map
-  {:ms-per-req (fn [row]
-                 (let [reqs (:request-count row)
-                       time (-> row :sensor-data :total-time)]
-                   (if (zero? reqs) nil (float (* (/ time reqs) USEC->MSEC)))))
-   :reqs-per-min :request-count
-   :errs-per-req (fn [row]
-                   (let [reqs (:request-count row)
-                         errs (:error-count row)]
-                     (if (zero? reqs) nil (float (/ errs reqs)))))
-   :total-time #(-> % :sensor-data :total-time (* USEC->MSEC))})
+  {:ms-per-req ms-per-req-mapper
+   :reqs-per-min reqs-per-min-mapper
+   :errs-per-req errs-per-req-mapper
+   :total-time total-time-mapper})
 
 (defn application-chart [app-name chart-type from to]
   (let [data (model/sensor-data-by-minute app-name from to)
@@ -40,7 +52,7 @@
 
 (defn aggregate-db-data [mapper agg val]
   (let [endpoint (:endpoint val)
-        new-val (mapper val)
+        new-val (reduce + 0 (vals (mapper val)))
         [agg-tot agg-count] (or (agg endpoint) [0 0])]
     (merge agg {endpoint [(+ agg-tot new-val) (+ agg-count 1)]})))
 
