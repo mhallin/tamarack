@@ -6,6 +6,8 @@
 (defn move-to [x y] (.moveTo *ctx* x y))
 (defn line-to [x y] (.lineTo *ctx* x y))
 
+(defn rect [x y w h] (.rect *ctx* x y w h))
+
 (defn fill-text [text x y] (.fillText *ctx* text x y))
 
 (defn stroke [] (.stroke *ctx*))

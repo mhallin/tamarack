@@ -1,6 +1,7 @@
 (ns tamarack.chart
   (:require [tamarack.util :as util]
             [tamarack.canvas :as canvas :include-macros true]
+            [clojure.string :as string]
             [goog.string :as gs]
             [goog.string.format :as gformat]))
 
@@ -16,21 +17,37 @@
    "rgba(252, 89, 55, 0.900)"
    "rgba(88, 98, 195, 0.850)"])
 
+(def key-names
+  {:sql "SQL"
+   :template-render "Template"
+   :request-count "Requests"
+   :error-count "Errors"})
+
+(defn readable-keyword [key]
+  (let [name (subs (str key) 1)
+        words (string/split name "-")
+        cap-words (map string/capitalize words)]
+    (string/join " " cap-words)))
+
+(defn key->str [key]
+  (or (key-names key)
+      (readable-keyword key)))
 
 (defn make-base-levels [key-order data]
-  (letfn [(incremental-sum [map]
+  (letfn [(incremental-sum [sensor-data]
             (first (reduce (fn [[acc sum] [key val]]
                              [(assoc acc key sum)
                               (+ sum val)])
                            [{} 0]
-                           map)))]
-    (zipmap (keys data) (map incremental-sum (vals data)))))
+                           (map (fn [key] [key (sensor-data key)]) key-order))))]
+    (zipmap (keys data)
+            (map incremental-sum (vals data)))))
 
 (defn draw-data [ctx canvas-width canvas-height data from to]
   (let [margin-left 40
         margin-right 30
         margin-top 20
-        margin-bottom 20
+        margin-bottom 40
         width (- canvas-width margin-left margin-right)
         height (- canvas-height margin-top margin-bottom)
         all-keys (all-keys-in-data data)
@@ -78,5 +95,20 @@
           (let [polygon {:fill color
                          :points (concat (map-indexed (partial draw-single-point key) minutes)
                                          (map-indexed (partial draw-inverse-point key) (reverse minutes)))}]
-            (canvas/draw-polygon polygon)))))))
+            (canvas/draw-polygon polygon))))
+
+      (doseq [[key color index] (map vector all-keys
+                                     (cycle key-colors)
+                                     (range))]
+        (let [x (- (* index 70) (/ margin-left 2))
+              y (+ height 15)]
+          (canvas/with-props {:begin-path true :fill color}
+            (canvas/rect x y 12 12)
+            (canvas/fill))
+          (canvas/with-props {:begin-path true
+                              :fill "rgb(117, 117, 117)"
+                              :font (str "10px " MAIN-FONT)}
+            (canvas/fill-text (key->str key)
+                              (+ x 16)
+                              (+ y 10))))))))
 
