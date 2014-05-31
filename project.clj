@@ -1,8 +1,8 @@
 (defproject tamarack "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2227"]
                  [org.clojure/core.async "0.1.298.0-2a82a1-alpha"]
-                 [om "0.6.3"]
+                 [om "0.6.4"]
                  [compojure "1.1.8"]
                  [clj-json "0.5.3"]
                  [clj-time "0.7.0"]
