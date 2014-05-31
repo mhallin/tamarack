@@ -100,7 +100,7 @@
       (doseq [[key color index] (map vector all-keys
                                      (cycle key-colors)
                                      (range))]
-        (let [x (- (* index 70) (/ margin-left 2))
+        (let [x (- (* index 61) (/ margin-left 2))
               y (+ height 15)]
           (canvas/with-props {:begin-path true :fill color}
             (canvas/rect x y 12 12)
