@@ -7,7 +7,7 @@
 (def default-tracking-now-window-size (* 60 30))
 
 (defn timeslice-ending-now [window-size]
-  (let [now (util/subtract-seconds (js/Date.) (* 5 60))]
+  (let [now (util/subtract-seconds (js/Date.) (* 2 60))]
     [(util/trunc-to-minute (util/subtract-seconds now window-size))
      (util/trunc-to-minute now)]))
 

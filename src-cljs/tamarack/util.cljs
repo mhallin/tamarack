@@ -15,7 +15,7 @@
 (defn minutes-between [from to]
   (loop [now from
          minutes []]
-    (if (>= (.getTime now) (.getTime to))
+    (if (> (.getTime now) (.getTime to))
       minutes
       (recur (js/Date. (+ 60000 (.getTime now)))
              (conj minutes (.getTime now))))))
