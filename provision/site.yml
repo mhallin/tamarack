@@ -7,3 +7,4 @@
     - jdk
     - leiningen
     - nginx
+    - phantomjs
