@@ -7,7 +7,9 @@ addons:
 before_script:
   - createdb -e -U postgres -E UTF-8 -O $USER tamarack
   - sudo apt-get install phantomjs npm
-  - sudo npm install -g karma karma-phantomjs-launcher karma-jasmine
+  - sudo npm install -g karma
+  - sudo npm install -g karma-phantomjs-launcher
+  - sudo npm install -g karma-jasmine
 
 script:
   - lein cljsbuild once
