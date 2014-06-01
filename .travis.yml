@@ -5,7 +5,6 @@ addons:
   postgresql: "9.3"
 
 before_script:
-  - psql -c "CREATE USER $USER;" -U postgres
   - psql -c "CREATE DATABASE tamarack OWNER $USER ENCODING 'UTF-8';"
   - sudo apt-get install phantomjs npm
   - sudo npm install -g karma karma-phantomjs-launcher karma-jasmine
