@@ -18,4 +18,4 @@ before_script:
 script:
   - bash ./provision/roles/leiningen/files/lein cljsbuild once
   - bash ./provision/roles/leiningen/files/lein midje
-  - karma start --single-run
+  - /usr/lib/node_modules/karma/bin/karma start --single-run
