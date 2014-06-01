@@ -11,8 +11,6 @@
 
 (enable-console-print!)
 
-(state/init-state)
-
 (defn- on-navigate [e]
   (-> e .-token secretary/dispatch! state/merge-state!))
 
@@ -20,13 +18,16 @@
   (goog.events/listen history/history EventType/NAVIGATE on-navigate)
   (.setEnabled history/history true))
 
-(.on (js/jQuery "#date-dropdown") "click" #(.stopPropagation %))
+(defn ^:export main []
+  (state/init-state)
 
-(letfn [(tab-clicked [e]
-          (.preventDefault e)
-          (.tab (js/jQuery (.-target e)) "show"))]
-  (.on (js/jQuery "#date-dropdown .nav a") "click" tab-clicked))
+  (.on (js/jQuery "#date-dropdown") "click" #(.stopPropagation %))
 
-(init-history)
+  (letfn [(tab-clicked [e]
+            (.preventDefault e)
+            ((aget (js/jQuery (.-target e)) "tab") "show"))]
+    (.on (js/jQuery "#date-dropdown .nav a") "click" tab-clicked))
 
-(view/render-all)
+  (init-history)
+
+  (view/render-all))

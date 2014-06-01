@@ -20,6 +20,7 @@
             [ragtime/ragtime.lein "0.3.7"]]
 
   :source-paths ["src-clj" "src-cljs"]
+  :test-paths ["test-clj"]
 
   :ring {:handler tamarack.handler/app
          :init tamarack.handler/init}
@@ -33,7 +34,8 @@
              :compiler {:output-to "resources/public/static/js/tamarack-main.js"
                         :output-dir "resources/public/static/js"
                         :optimizations :none
-                        :source-map true}}
+                        :source-map true
+                        :pretty-print true}}
             {:id "tamarack-release"
              :source-paths ["src-cljs"]
              :compiler {:output-to "resources/public/static/js-min/tamarack-main.js"
@@ -41,12 +43,20 @@
                         :optimizations :advanced
                         :pretty-print false
                         :preamble ["react/react.min.js"]
-                        :externs ["react/externs/react.js"]}}]}
+                        :externs ["react/externs/react.js"]}}
+            {:id "tamarack-tests"
+             :source-paths ["src-cljs" "test-cljs"]
+             :compiler {:output-to "target/out/tamarack-tests.js"
+                        :output-dir "target/out"
+                        :optimizations :whitespace
+                        :pretty-print true
+                        :preamble ["react/react.min.js"]}}]}
 
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]
                         [ring-serve "0.1.2"]
-                        [midje "1.6.3"]]
+                        [midje "1.6.3"]
+                        [im.chit/purnam.test "0.4.3"]]
          :plugins [[lein-midje "3.1.1"]]}
    :uberjar {:aot :all}})
