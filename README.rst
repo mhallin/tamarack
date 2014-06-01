@@ -2,7 +2,7 @@
  Tamarack
 ==========
 
-.. image:: https://travis-ci.org/mhallin/rosewood.svg?branch=master
+.. image:: https://travis-ci.org/mhallin/rosewood.svg?branch=develop
    :target: https://travis-ci.org/mhallin/rosewood
 
 Tamarack is a quantitative web application profiler. It will track the
