@@ -8,7 +8,7 @@ addons:
 
 before_script:
   - createdb -e -U postgres -E UTF-8 -O $USER tamarack
-  - sudo apt-add-repository ppa:chris-lea/node.js
+  - sudo apt-add-repository -y ppa:chris-lea/node.js
   - sudo apt-get update -q
   - sudo apt-get install phantomjs npm
   - sudo npm config set registry http://registry.npmjs.org/
