@@ -1,0 +1,16 @@
+language: clojure
+lein: lein2
+
+addons:
+  postgresql: "9.3"
+
+before_script:
+  - psql -c "CREATE USER $USER;" -U postgres
+  - psql -c "CREATE DATABASE tamarack OWNER $USER ENCODING 'UTF-8';"
+  - sudo apt-get install phantomjs npm
+  - sudo npm install -g karma karma-phantomjs-launcher karma-jasmine
+
+script:
+  - lein cljsbuild once
+  - lein midje
+  - /usr/local/lib/node_modules/karma/bin/karma start --single-run
