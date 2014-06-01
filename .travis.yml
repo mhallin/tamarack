@@ -17,6 +17,6 @@ before_script:
   - sudo npm install -g karma-jasmine
 
 script:
-  - lein cljsbuild once
-  - lein midje
+  - ./provision/leiningen/files/lein cljsbuild once
+  - ./provision/leiningen/files/lein midje
   - /usr/local/lib/node_modules/karma/bin/karma start --single-run
