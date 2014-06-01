@@ -10,7 +10,7 @@ before_script:
   - createdb -e -U postgres -E UTF-8 -O $USER tamarack
   - sudo apt-add-repository -y ppa:chris-lea/node.js
   - sudo apt-get update -q
-  - sudo apt-get install phantomjs npm
+  - sudo apt-get install phantomjs nodejs
   - sudo npm config set registry http://registry.npmjs.org/
   - sudo npm install -g karma
   - sudo npm install -g karma-phantomjs-launcher
