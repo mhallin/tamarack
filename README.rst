@@ -2,6 +2,9 @@
  Tamarack
 ==========
 
+.. image:: https://travis-ci.org/mhallin/rosewood.svg?branch=master
+   :target: https://travis-ci.org/mhallin/rosewood
+
 Tamarack is a quantitative web application profiler. It will track the
 performance of all requests made to your app, aggregate them, and
 present them so you can identify bottlenecks and track improvements
