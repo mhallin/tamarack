@@ -6,3 +6,8 @@ target
 resources/public/static/js
 resources/public/static/js-min
 .lein-*
+backend/MANIFEST
+backend/dist
+backend/tamarack.egg-info
+backend/tamarack/static
+__pycache__

@@ -18,4 +18,4 @@
         (on-complete (reader/read-string (.getResponseText xhr)))))
     (. xhr
       (send url (meths method) (when data (pr-str data))
-        #js {"Content-Type" "application/edn"}))))
+        #js {"Accept" "application/edn"}))))
