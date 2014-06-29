@@ -1,0 +1,18 @@
+{"version":3,
+ "file":
+ "/Users/mhallin/GitHub/tamarack/resources/public/static/js/tamarack/state.js",
+ "sources":["state.cljs"],
+ "lineCount":27,
+ "mappings":
+ ";AAAA;;;;;;AAIA,AAAKA,2BAAU,yBAAA,zBAACC;AAEhB,AAAKC,kDAAiC,CAAA,KAAA;AAEtC,sCAAA,4CAAA,lFAAMC,qEAAsBC,aAC1B,0EAAA,AAAA,tEAAMC,MAAI,AAACC,yCAAsB,KAAAC,QAAW,CAAA,IAAA,+FACzC,AAACC,wCAAqB,AAACF,yCAAsBD,IAAID,cACjD,AAACI,wCAAqBH;;AAE3B,kCAAA,gCAAA,lEAAMI,6DAAkBC,KACtB,oBAAM,AAAA,mGAAA,AAAAC,0BAAgBD;CAAtB,AACE,0CAAA,nCAACE,+BAAWF,6DAAY,AAACP,8CAAqB,AAAA,iGAAA,AAAAQ,0BAAeD;;CAD/D;;;AAGF,iCAAA,2CAAA,5EAAMG,2DAAYH,IAAIN,aACpB,mCAAA,nCAACQ,+BAAWF,uEAAiBN;AAC7B,mCAAA,qEAAA,xGAACQ,+BAAWF;AACZ,OAACD,0CAAiBC;;AAEpB,mCAAA,mCAAA,tEAAMI,+DAAcC,OAClB,osBAAA,hsBAAMC,UAAQ,AAAA,iGAAA,AAAAL,0BAAeX,+BACvBiB,UAAQ,AAAA,iGAAcF,WACtBG,aAAW,EAAI,AAACC,yBAAE,AAAA,uFAASH,SAAS,AAAA,uFAASC,WAChC,AAACG,0BAAMJ,QAAQC,SACfA,aACbI,qBAAO,gCAAA,hCAACC,0BAAMP,yEAAmBG,YACrC,OAACK,+BAAMvB,yBAAUoB,gBAAMC;;AAE3B,4BAAA,uBAAA,nDAAMG,mDACJ,8KAAA,1KAAMC,SAAO,AAACtB,8CAAqBD,qDAC7BE,cAAYF,gDAChB,gEAAA,2CAAA,+DAAA,2CAAA,gEAAA,+EAAA,qEAAA,laAACwB,gCAAO1B,uOAA+ByB,0EACKrB",
+ "names":
+ ["tamarack.state/app-state", "cljs.core/atom",
+  "tamarack.state/default-tracking-now-window-size",
+  "tamarack.state/timeslice-ending-now", "window-size", "now",
+  "tamarack.util/subtract-seconds", "js/Date",
+  "tamarack.util/trunc-to-minute", "tamarack.state/update-timeslice",
+  "app", "cljs.core/deref", "om.core/update!",
+  "tamarack.state/track-now!", "tamarack.state/merge-state!", "state",
+  "old-app", "new-app", "merged-app", "cljs.core/=", "cljs.core/merge",
+  "state'", "cljs.core/assoc", "cljs.core/swap!",
+  "tamarack.state/init-state", "window", "cljs.core/reset!"]}

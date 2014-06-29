@@ -1,0 +1,24 @@
+// Compiled by ClojureScript 0.0-2227
+goog.provide('tamarack.view');
+goog.require('cljs.core');
+goog.require('tamarack.components.debug');
+goog.require('tamarack.components.timeslice');
+goog.require('tamarack.pages.main');
+goog.require('tamarack.components.breadcrumbs');
+goog.require('tamarack.state');
+goog.require('tamarack.util');
+goog.require('tamarack.util');
+goog.require('tamarack.components.debug');
+goog.require('tamarack.state');
+goog.require('om.core');
+goog.require('om.core');
+goog.require('tamarack.components.breadcrumbs');
+goog.require('tamarack.pages.main');
+goog.require('tamarack.components.timeslice');
+tamarack.view.render_all = (function render_all(){om.core.root(tamarack.components.breadcrumbs.component,tamarack.state.app_state,new cljs.core.PersistentArrayMap(null, 1, [cljs.core.constant$keyword$229,tamarack.util.element_by_id("breadcrumb")], null));
+om.core.root(tamarack.pages.main.page,tamarack.state.app_state,new cljs.core.PersistentArrayMap(null, 1, [cljs.core.constant$keyword$229,tamarack.util.element_by_id("main-content")], null));
+om.core.root(tamarack.components.timeslice.nav_label,tamarack.state.app_state,new cljs.core.PersistentArrayMap(null, 2, [cljs.core.constant$keyword$229,tamarack.util.element_by_id("timeslice-nav"),cljs.core.constant$keyword$201,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.constant$keyword$234], null)], null));
+om.core.root(tamarack.components.timeslice.edit_tracking_now_duration,tamarack.state.app_state,new cljs.core.PersistentArrayMap(null, 2, [cljs.core.constant$keyword$229,tamarack.util.element_by_id("up-to-now-tab"),cljs.core.constant$keyword$201,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.constant$keyword$234], null)], null));
+om.core.root(tamarack.components.timeslice.edit_date_range,tamarack.state.app_state,new cljs.core.PersistentArrayMap(null, 2, [cljs.core.constant$keyword$229,tamarack.util.element_by_id("date-range-tab"),cljs.core.constant$keyword$201,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.constant$keyword$234], null)], null));
+return om.core.root(tamarack.components.debug.component,tamarack.state.app_state,new cljs.core.PersistentArrayMap(null, 1, [cljs.core.constant$keyword$229,tamarack.util.element_by_id("debug-container")], null));
+});
