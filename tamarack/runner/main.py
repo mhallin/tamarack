@@ -17,7 +17,7 @@ def cli(ctx, config):
     '''Tamarack manager and runner'''
 
     ctx.obj = {
-        'config': config
+        'config': os.path.join(os.getcwd(), os.path.expanduser(config)) if config else None
     }
 
 

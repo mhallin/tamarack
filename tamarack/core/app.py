@@ -12,7 +12,8 @@ def create_app(config):
 
 
 def configure_app(app, config):
-    app.config.from_object(config)
+    app.config.from_pyfile('settings/defaults.py')
+    app.config.from_pyfile(config)
 
 
 def configure_blueprints(app):
