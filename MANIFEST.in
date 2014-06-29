@@ -1,4 +1,5 @@
 recursive-include tamarack *.py
-recursive-include tamarack *.mako
 recursive-include tamarack/templates *
 recursive-include tamarack/static *
+
+include setup.py README.rst MANIFEST.in

@@ -4,7 +4,7 @@ import sys
 
 from distutils.command.sdist import sdist as SdistCommand
 from os import path
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 from pathlib import Path
 
@@ -64,9 +64,10 @@ setup(
 
     license='BSD',
 
-    packages=[
-        'tamarack'
-    ],
+    packages=find_packages(exclude=['tests']),
+
+    include_package_data=True,
+    zip_safe=False,
 
     install_requires=[
         'flask>=0.10.0,<0.11.0',
