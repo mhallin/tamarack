@@ -1,5 +1,6 @@
 import click
 import os
+import shutil
 
 from alembic import command
 from alembic.config import Config
@@ -96,6 +97,20 @@ def shell(ctx):
 
     script.make_shell(make_shell_env,
                       banner='Interactive Tamarack Shell')()
+
+
+@cli.command()
+@click.argument('config')
+def init(config):
+    '''Generate a Tamarack configuration file'''
+
+    srcpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                           '../templates/settings.py')
+    destpath = os.path.join(os.getcwd(), os.path.expanduser(config))
+
+    shutil.copy(srcpath, destpath)
+
+    click.echo('Tamarack settings file created at %s' % config)
 
 
 @cli.group()
