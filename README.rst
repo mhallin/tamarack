@@ -57,4 +57,28 @@ all Python packages will be installed:
     # Install Tamarack from GitHub
     pip install https://github.com/mhallin/tamarack/archive/develop.zip
 
+    # Create a configuration file
+    tamarack init /etc/tamarack.py
+
+This will generate a configuration file at ``/etc/tamarack.py``, which
+you will need to edit with the settings for your system. When you're
+done, you're ready to start Tamarack:
+
+.. code-block:: sh
+
+    tamarack --config=/etc/tamarack.py server
+
+This will start an HTTP server on port 3000, which you can visit in a
+web browser.
+
+Where to Go From Here?
+======================
+
+If you followed the instructions above and visited the page, you
+probably noticed that the list of applications is empty. Now you will
+need to integrate the `Tamarack Collector`_ in your application in
+order to start receiving profiling data.
+
 .. _PostgreSQL: http://www.postgresql.org/
+
+.. _Tamarack Collector: https://github.com/mhallin/tamarack-collector-py
