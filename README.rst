@@ -41,21 +41,39 @@ and running:
 
 Once those packages have been installed, you can begin setting up
 Tamarack. The first thing you will need is a virtual environment where
-all Python packages will be installed:
+all Python packages will be installed. With Python 3.4 this should be
+easy easy, since Virtualenv now is bundled with the Python
+installation. However, this clashes with some Linux distributions'
+package management and might require some manual setup:
 
 .. code-block:: sh
 
-    # Install virtualenv globally if you don't have it installed already
+    ## Skip this if you have pyvenv-3.4 available:
+
+    # Install virtualenv globally
     pip3 install virtualenv
 
     # Create a Tamarack environment in /var/lib
     virtualenv -p `which python3.4` /var/lib/tamarack
 
+If you have ``pyvenv-3.4`` available, you can simply use it instead:
+
+.. code-block:: sh
+
+    ## Skip this if you installed virtualenv above:
+
+    # Create a Tamarack environment in /var/lib
+    pyvenv-3.4 /var/lib/tamarack
+
+Common for both setups is how you use them to install Tamarack:
+
+.. code-block:: sh
+
     # Step into this virtual environment
     source /var/lib/tamarack/bin/activate
 
-    # Install Tamarack from GitHub
-    pip install https://github.com/mhallin/tamarack/archive/develop.zip
+    # Install Tamarack
+    pip install tamarack
 
     # Create a configuration file
     tamarack init /etc/tamarack.py
