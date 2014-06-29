@@ -9,7 +9,7 @@ from setuptools.command.test import test as TestCommand
 from pathlib import Path
 
 thisdir = Path(__file__).parent.resolve()
-frontenddir = thisdir / '..'
+thisdir = thisdir
 
 
 class TamarackSdistCommand(SdistCommand):
@@ -18,7 +18,7 @@ class TamarackSdistCommand(SdistCommand):
 
         result = subprocess.call('lein cljsbuild once tamarack tamarack-release',
                                  shell=True,
-                                 cwd=bytes(frontenddir))
+                                 cwd=bytes(thisdir))
 
         if result:
             raise Exception('Could not compile ClojureScript')
@@ -26,7 +26,7 @@ class TamarackSdistCommand(SdistCommand):
     def run_copy_static(self):
         print('copying static folder from frontend dir')
 
-        staticdir = frontenddir / 'resources/public/static'
+        staticdir = thisdir / 'static'
         destdir = thisdir / 'tamarack/static'
 
         if path.exists(bytes(destdir)):
@@ -50,10 +50,6 @@ class PyTestCommand(TestCommand):
 tests_requires = [
     'pytest>=2.5,<2.6',
     'flake8>=2.0.0,<3.0.0',
-]
-
-gevent_requires = [
-    'aiohttp',
 ]
 
 
@@ -80,11 +76,11 @@ setup(
         'Flask-SQLAlchemy>=1.0,<2.0',
         'edn_format>=0.5,<0.6',
         'psycopg2>=2.5,<2.6',
+        'aiohttp',
     ],
 
     extras_require={
         'tests': tests_requires,
-        'gevent': gevent_requires,
     },
 
     entry_points={
