@@ -1,32 +1,13 @@
 (defproject tamarack "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2227"]
-                 [org.clojure/core.async "0.1.298.0-2a82a1-alpha"]
+                 [org.clojure/clojurescript "0.0-2234"]
                  [om "0.6.4"]
-                 [compojure "1.1.8"]
-                 [clj-json "0.5.3"]
-                 [clj-time "0.7.0"]
-                 [secretary "1.1.1"]
-                 [org.mortbay.jetty/jetty "6.1.26"]
-                 [korma "0.3.1"]
-                 [org.postgresql/postgresql "9.2-1002-jdbc4"]
-                 ;[org.clojure/java.jdbc "0.3.2"]
-                 [ragtime "0.3.7"]
+                 [secretary "1.2.0"]
                  [sablono "0.2.17"]]
 
-  :plugins [[lein-ring "0.8.10"]
-            [lein-cljsbuild "1.0.3"]
-            [lein-ancient "0.5.5"]
-            [ragtime/ragtime.lein "0.3.7"]]
+  :plugins [[lein-cljsbuild "1.0.3"]]
 
-  :source-paths ["src-clj" "src-cljs"]
-  :test-paths ["test-clj"]
-
-  :ring {:handler tamarack.handler/app
-         :init tamarack.handler/init}
-
-  :ragtime {:migrations ragtime.sql.files/migrations
-            :database "jdbc:postgresql://localhost/tamarack"}
+  :source-paths ["src-cljs"]
 
   :cljsbuild
   {:builds [{:id "tamarack"
@@ -53,10 +34,5 @@
                         :preamble ["react/react.min.js"]}}]}
 
   :profiles
-  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring-mock "0.1.5"]
-                        [ring-serve "0.1.2"]
-                        [midje "1.6.3" :exclusions [org.clojure/tools.macro]]
-                        [im.chit/purnam.test "0.4.3"]]
-         :plugins [[lein-midje "3.1.1"]]}
+  {:dev {:dependencies [[im.chit/purnam.test "0.4.3"]]}
    :uberjar {:aot :all}})

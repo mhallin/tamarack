@@ -3,11 +3,12 @@
 .vagrant
 out
 target
-resources/public/static/js
-resources/public/static/js-min
+static/js
+static/js-min
 .lein-*
 backend/MANIFEST
 backend/dist
 backend/tamarack.egg-info
 backend/tamarack/static
 __pycache__
+node_modules

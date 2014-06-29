@@ -1,5 +1,5 @@
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'postgresql://mhallin@localhost/tamarack'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/tamarack'
 
     DEBUG = False
     JS_DEBUG = True
