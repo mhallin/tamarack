@@ -12,19 +12,18 @@
   :cljsbuild
   {:builds [{:id "tamarack"
              :source-paths ["src-cljs"]
-             :compiler {:output-to "resources/public/static/js/tamarack-main.js"
-                        :output-dir "resources/public/static/js"
+             :compiler {:output-to "static/js/tamarack-main.js"
+                        :output-dir "static/js"
                         :optimizations :none
                         :source-map true
                         :pretty-print true}}
             {:id "tamarack-release"
              :source-paths ["src-cljs"]
-             :compiler {:output-to "resources/public/static/js-min/tamarack-main.js"
-                        :output-dir "resources/public/static/js-min"
+             :compiler {:output-to "static/js-min/tamarack-main.js"
+                        :output-dir "static/js-min"
                         :optimizations :advanced
                         :pretty-print false
-                        :preamble ["react/react.min.js"]
-                        :externs ["react/externs/react.js"]}}
+                        :externs ["node_modules/react-externs/externs.js"]}}
             {:id "tamarack-tests"
              :source-paths ["src-cljs" "test-cljs"]
              :compiler {:output-to "target/out/tamarack-tests.js"

@@ -15,22 +15,22 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'resources/public/static/jquery/jquery-2.1.0.min.js',
-      'react/phantomjs-shims.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js',
+      'phantomjs/phantomjs-shims.js',
       'target/out/tamarack-tests.js'
     ],
 
 
     // list of files to exclude
     exclude: [
-      
+
     ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-    
+
     },
 
 

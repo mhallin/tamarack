@@ -6,9 +6,9 @@ target
 static/js
 static/js-min
 .lein-*
-backend/MANIFEST
-backend/dist
-backend/tamarack.egg-info
-backend/tamarack/static
+/MANIFEST
+/dist
+/tamarack.egg-info
+/tamarack/static
 __pycache__
 node_modules

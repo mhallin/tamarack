@@ -1,7 +1,0 @@
-{"version":3,
- "file":
- "/Users/mhallin/GitHub/tamarack/resources/public/static/js/tamarack/history.js",
- "sources":["history.cljs"],
- "lineCount":10,
- "mappings":";AAAA;;;;;;AAKA,AAAKA,2BAAQ,KAAAC",
- "names":["tamarack.history/history", "goog/History"]}
