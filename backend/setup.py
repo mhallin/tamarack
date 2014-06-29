@@ -1,4 +1,3 @@
-import pytest
 import shutil
 import subprocess
 import sys
@@ -44,6 +43,7 @@ class TamarackSdistCommand(SdistCommand):
 
 class PyTestCommand(TestCommand):
     def run_tests(self):
+        import pytest
         sys.exit(pytest.main())
 
 

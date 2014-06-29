@@ -71,7 +71,7 @@ def upgrade(ctx):
     '''Upgrade the Tamarack installation'''
 
     ctx.forward(db)
-    ctx.forward(upgrade, revision='head', sql=False)
+    ctx.forward(db_upgrade, revision='head', sql=False)
 
 
 @cli.command()
