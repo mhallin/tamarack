@@ -9,6 +9,7 @@ static/js-min
 /MANIFEST
 /dist
 /tamarack.egg-info
-/tamarack/static
+/tamarack/static/js-out
+/tamarack/static/js-out-min
 __pycache__
 node_modules
