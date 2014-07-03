@@ -25,7 +25,7 @@
 
   (letfn [(tab-clicked [e]
             (.preventDefault e)
-            ((aget (js/jQuery (.-target e)) "tab") "show"))]
+            (.tab (js/jQuery (.-target e)) "show"))]
     (.on (js/jQuery "#date-dropdown .nav a") "click" tab-clicked))
 
   (init-history)
