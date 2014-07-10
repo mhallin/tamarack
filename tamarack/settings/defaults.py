@@ -1,5 +1,6 @@
 DEBUG = False
 JS_DEBUG = True
+STATE_DEBUG = False
 
 LISTEN_ADDRESS = ''
 PORT = 3000

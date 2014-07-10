@@ -7,54 +7,70 @@
     <title>Tamarack Explorer</title>
 {% if config.JS_DEBUG %}
     <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
 {% else %}
     <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 {% endif %}
     <link href="/static/css/tamarack.css" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/">Tamarack Explorer</a>
-        </div>
-
-        <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown" id="date-dropdown-button">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="timeslice-nav"></a>
-            <div class="dropdown-menu" id="date-dropdown">
-              <ul class="nav nav-pills nav-justified">
-                <li class="active"><a href="#up-to-now-tab" data-toggle="tab">Up to now</a></li>
-                <li><a href="#date-range-tab" data-toggle="tab">Date range</a></li>
-              </ul>
-
-              <div class="tab-content">
-                <div class="tab-pane active" id="up-to-now-tab"></div>
-                <div class="tab-pane" id="date-range-tab"></div>
+    <div class="container-fluid sidebar-container">
+      <div class="row sidebar-container">
+        <div class="col-sm-2 sidebar-container innermost-sidebar-container">
+          <nav class="row navbar navbar-default navbar-toplevel sidebar-header" role="navigation">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <span class="navbar-brand">Tamarack</span>
               </div>
             </div>
-          </li>
-        </ul>
+          </nav>
+
+          <div class="row sidebar" id="sidebar">
+          </div>
+        </div>
+
+        <div class="col-sm-10">
+          <nav class="row navbar navbar-default navbar-toplevel" role="navigation">
+            <div class="container-fluid">
+
+              <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" id="date-dropdown-button">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="timeslice-nav"></a>
+                  <div class="dropdown-menu" id="date-dropdown">
+                    <ul class="nav nav-pills nav-justified">
+                      <li class="active"><a href="#up-to-now-tab" data-toggle="tab">Up to now</a></li>
+                      <li><a href="#date-range-tab" data-toggle="tab">Date range</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="up-to-now-tab"></div>
+                      <div class="tab-pane" id="date-range-tab"></div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </nav>
+
+          <div class="container-fluid" id="breadcrumb"></div>
+
+          <div class="container-fluid" id="main-content"></div>
+
+{% if config.STATE_DEBUG %}
+          <div class="container-fluid">
+            <div class="col-lg-12" id="debug-container"></div>
+          </div>
+{% endif %}
+        </div>
       </div>
-    </nav>
-
-    <div class="container">
-      <div class="row" id="breadcrumb">
-      </div>
-    </div>
-
-    <div class="container" id="main-content">
-    </div>
-
-    <div class="container">
-      <div id="debug-container"></div>
     </div>
 
 {% if config.JS_DEBUG %}
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.js"></script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.10.0/react.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.9.0/react.js"></script>
     <script src="/static/js-out/goog/base.js" type="text/javascript"></script>
     <script src="/static/js-out/tamarack-main.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -64,7 +80,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.10.0/react.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.9.0/react.min.js"></script>
     <script src="/static/js-out/tamarack-main.min.js" type="text/javascript"></script>
 {% endif %}
 

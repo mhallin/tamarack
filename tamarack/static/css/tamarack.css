@@ -1,46 +1,69 @@
 #date-dropdown {
-	width: 520px;
-	padding: 10px;
+    width: 520px;
+    padding: 10px;
 }
 
-#date-dropdown .nav {
-	padding: 5px 5px 15px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator{
-    display:inline-block;
-    margin-top:2%;
-    float:right;
-}
-input[type="date"]::-webkit-inner-spin-button,
-input[type="time"]::-webkit-inner-spin-button{
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.num-col {
-	text-align: right;
-}
-
-/* Fix for strange looking .active list groups element when the list
-   group is embedded in a .panel. */
-.panel > .list-group .list-group-item.active {
-	margin-left: -1px;
-	margin-right: -1px;
-}
 
 .list-group-item.heading {
-	text-transform: uppercase;
-	color: #777;
-	font-size: 12px;
-	padding-top: 24px;
-	padding-bottom: 8px;
+    text-transform: uppercase;
+    color: #777;
+    font-size: 12px;
+    padding-top: 24px;
+    padding-bottom: 8px;
 }
 
 .navbar-toplevel {
+    border-top: 0;
     border-left: 0;
     border-right: 0;
     border-radius: 0;
+    background-color: #f0f0f0;
+}
+
+#sidebar {
+    background-color: #f0f0f0;
+    height: 100%;
+    border-right: 1px solid #e7e7e7;
+}
+
+.sidebar-container {
+    height: 100%;
+}
+
+.sidebar-header.navbar {
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+
+.innermost-sidebar-container {
+    padding-bottom: 50px;
+}
+
+html, body {
+    height: 100%;
+}
+
+#sidebar ol {
+    margin-top: 21px;
+    padding-left: 0;
+}
+
+#sidebar li {
+    list-style: none;
+    margin: 5px 0;
+}
+
+#sidebar a {
+    display: block;
+    padding: 10px 0 10px 20px;
+}
+
+#sidebar .fa {
+    display: inline-block;
+    width: 2.5ex;
+    margin-right: 1ex;
+}
+
+#sidebar .active {
+    background-color: #e3e3e3;
 }

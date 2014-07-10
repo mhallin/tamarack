@@ -1,6 +1,5 @@
 (ns tamarack.pages.main
   (:require [om.core :as om :include-macros true]
-            [sablono.core :as html :refer-macros [html]]
             [tamarack.state :as state]
             [tamarack.pages.app-endpoint-overview :as app-endpoint-overview]
             [tamarack.pages.app-dashboard :as app-dashboard]
