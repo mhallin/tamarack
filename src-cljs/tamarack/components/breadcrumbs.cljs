@@ -52,7 +52,7 @@
             (fn [i loc]
               (let [is-active (= (+ i 1) (count location-list))
                     {url :url title :title} loc]
-                [:li (if is-active {:class "active"} nil)
+                [:li (merge {:key i} (if is-active {:class "active"} nil))
                  (if is-active
                    title
                    [:a
