@@ -4,8 +4,7 @@
             [clojure.string :as string]
             [tamarack.util :as util]
             [tamarack.components.chart :as chart]
-            [tamarack.components.agg-table :as agg-table]
-            [tamarack.components.app-navbar :as app-navbar]))
+            [tamarack.components.agg-table :as agg-table]))
 
 (defn app-chart-url [app chart-type]
   (let [comps [ "/explorer-api/v1/applications"
@@ -25,7 +24,7 @@
        [:div.app-dashboard
         [:div.row [:div.col-md-12 [:h2 "Application Overview for " (-> app :current-app :display-name)]]]
         [:div.row
-         [:div.col-md-9
+         [:div.col-md-12
           [:div.row
            [:div.col-md-4
             [:h3 "Time per Request"]
@@ -55,6 +54,4 @@
             [:h3 "Endpoints Taking Most Time"]
             (om/build agg-table/component app {:opts {:agg-type :total-time
                                                       :round-fn (partial util/round-to 2)
-                                                      :unit " ms"}})]]]
-         [:div.col-md-3
-          (om/build app-navbar/component app)]]]))))
+                                                      :unit " ms"}})]]]]]))))
