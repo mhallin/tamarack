@@ -3,13 +3,11 @@
             [tamarack.util :as util]
             [tamarack.state :as state]
             [tamarack.components.debug :as debug]
-            [tamarack.components.breadcrumbs :as breadcrumbs]
             [tamarack.components.timeslice :as timeslice]
             [tamarack.components.sidebar :as sidebar]
             [tamarack.pages.main :as main]))
 
 (defn render-all []
-  (om/root breadcrumbs/component state/app-state {:target (util/element-by-id "breadcrumb")})
   (om/root main/page state/app-state {:target (util/element-by-id "main-content")})
   (om/root sidebar/component state/app-state {:target (util/element-by-id "sidebar")})
 
