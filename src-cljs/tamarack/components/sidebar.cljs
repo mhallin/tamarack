@@ -6,9 +6,9 @@
   (html
    [:ol
     [:li.active
-     [:a {:href "#"} [:i.fa.fa-cubes] "Applications"]]
+     [:a {:href "#"} "Applications"]]
     [:li
-     [:a {:href "#"} [:i.fa.fa-group] "Teams"]]]))
+     [:a {:href "#"} "Teams"]]]))
 
 (defn component [app owner]
   (reify
