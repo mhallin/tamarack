@@ -4,6 +4,7 @@ from tamarack.common import data_response
 from tamarack.core.db import db
 from tamarack.core.models import Application
 from tamarack.core.models.request import process_minute_datapoint
+from tamarack.tasks.request import process_request_data
 
 receiverapi = Blueprint('receiverapi', __name__)
 
@@ -11,12 +12,6 @@ receiverapi = Blueprint('receiverapi', __name__)
 @receiverapi.route('/request-data', methods=['POST'])
 def handle_request_data():
     data = request.get_json()
-    print(data)
-    app = Application.by_name(data['app_name'])
-
-    for minute_data in data['by_minute']:
-        process_minute_datapoint(app, minute_data)
-
-    db.session.commit()
+    process_request_data.delay(data)
 
     return data_response({'status': 'ok'})

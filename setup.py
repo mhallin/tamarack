@@ -52,6 +52,10 @@ tests_requires = [
     'flake8>=2.0.0,<3.0.0',
 ]
 
+redis_requires = [
+    'redis>=2.10.0,<2.11.0',
+]
+
 
 setup(
     name='tamarack',
@@ -78,10 +82,12 @@ setup(
         'edn_format>=0.5,<0.6',
         'psycopg2>=2.5,<2.6',
         'aiohttp',
+        'celery>=3.1.0,<3.2.0',
     ],
 
     extras_require={
         'tests': tests_requires,
+        'redis': redis_requires,
     },
 
     entry_points={

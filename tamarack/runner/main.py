@@ -113,6 +113,16 @@ def init(config):
     click.echo('Tamarack settings file created at %s' % config)
 
 
+@cli.command()
+@click.pass_context
+def worker(ctx):
+    app = create_app(ctx.obj['config'])
+
+    from tamarack.core.celery import celery
+
+    return celery.start()
+
+
 @cli.group()
 @click.pass_context
 def db(ctx):

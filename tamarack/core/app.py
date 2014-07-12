@@ -7,6 +7,7 @@ def create_app(config):
     configure_app(app, config)
     configure_blueprints(app)
     configure_db(app)
+    configure_celery(app)
 
     return app
 
@@ -30,3 +31,20 @@ def configure_db(app):
     from .db import db
 
     db.init_app(app)
+
+
+def configure_celery(app):
+    from .celery import celery
+
+    celery.conf.update(app.config)
+
+    TaskBase = celery.Task
+
+    class ContextTask(TaskBase):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return super().__call__(*args, **kwargs)
+
+    celery.Task = ContextTask
