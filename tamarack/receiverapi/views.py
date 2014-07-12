@@ -2,7 +2,8 @@ from flask import Blueprint, request
 
 from tamarack.common import data_response
 from tamarack.core.db import db
-from tamarack.core.models import Application, process_minute_datapoint
+from tamarack.core.models import Application
+from tamarack.core.models.request import process_minute_datapoint
 
 receiverapi = Blueprint('receiverapi', __name__)
 
