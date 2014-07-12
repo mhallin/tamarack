@@ -8,7 +8,7 @@
 
 (defn app-chart-url [app chart-type]
   (let [comps [ "/explorer-api/v1/applications"
-                (:app-id app)
+                (:name app)
                 "chart"
                 (subs (str chart-type) 1)]]
     (string/join "/" comps)))

@@ -10,7 +10,7 @@
   (let [[from to] (-> app :timeslice :window)
         url (str (string/join "/"
                               [ "/explorer-api/v1/applications"
-                                (-> app :current-app :app-id)
+                                (-> app :current-app :name)
                                 "aggregate"
                                 (subs (str agg-type) 1)])
                  "?from=" (util/inst->iso from)
@@ -23,12 +23,12 @@
 
 (defn- endpoint-url [app endpoint]
   (routes/url-of routes/app-endpoint-overview
-                 {:id (-> app :current-app :app-id) :endpoint endpoint}))
+                 {:id (-> app :current-app :name) :endpoint endpoint}))
 
 (defn- goto-endpoint [app endpoint e]
   (.preventDefault e)
   (routes/navigate-to routes/app-endpoint-overview
-                      {:id (-> @app :current-app :app-id) :endpoint endpoint}))
+                      {:id (-> @app :current-app :name) :endpoint endpoint}))
 
 (defn- render-row [app round-fn unit [endpoint value]]
   (html

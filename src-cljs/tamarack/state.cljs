@@ -1,6 +1,8 @@
 (ns tamarack.state
   (:require [om.core :as om :include-macros true]
-            [tamarack.util :as util]))
+            [clojure.string :as string]
+            [tamarack.util :as util]
+            [tamarack.xhr :as xhr]))
 
 (def app-state (atom nil))
 
@@ -21,12 +23,20 @@
   (update-timeslice app))
 
 (defn merge-state! [state]
-  (let [old-app (:current-app @app-state)
-        new-app (:current-app state)
-        merged-app (if (= (:app-id old-app) (:app-id new-app))
-                     (merge old-app new-app)
-                     new-app)
-        state' (assoc state :current-app merged-app)]
+  (let [new-app (:current-app state)
+        known-apps (:all-apps @app-state)
+        known-app (if (and known-apps new-app)
+                    ((:all-apps @app-state) (:name new-app))
+                    new-app)
+        state' (assoc state :current-app known-app)]
+    (when (and new-app (nil? (:display-name known-app)))
+      (let [url (string/join "/" [ "/explorer-api/v1/applications"
+                                   (:name known-app) ])]
+        (xhr/send-edn {:method :get
+                       :url url
+                       :on-complete
+                       (fn [res]
+                         (swap! app-state merge {:current-app res}))})))
     (swap! app-state merge state')))
 
 (defn init-state []

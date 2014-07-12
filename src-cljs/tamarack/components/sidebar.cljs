@@ -6,9 +6,7 @@
   (html
    [:ol
     [:li.active
-     [:a {:href "#"} "Applications"]]
-    [:li
-     [:a {:href "#"} "Teams"]]]))
+     [:a {:href "#"} "Applications"]]]))
 
 (defn component [app owner]
   (reify

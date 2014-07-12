@@ -6,7 +6,7 @@
 
 (defn app-endpoint-chart-url [app endpoint chart-type]
   (let [comps [ "/explorer-api/v1/applications"
-                (:app-id app)
+                (:name app)
                 "endpoints"
                 endpoint
                 "chart"

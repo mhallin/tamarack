@@ -16,8 +16,14 @@
   (html
    [:tr {:key (:name row)}
     [:td [:a
-          {:href (app-url row) :onClick #(app-link-clicked % row)}
+          {:href (app-url row) :onClick #(app-link-clicked % @row)}
           (:display-name row)]]]))
+
+(defn- app-list->map [app-list]
+  (reduce #(assoc %1 (:name %2) %2) {} app-list))
+
+(defn- sorted-app-list [app-map]
+  (sort-by :display-name (vals app-map)))
 
 (defn page [app owner]
   (reify
@@ -30,7 +36,7 @@
                      :url "/explorer-api/v1/applications"
                      :on-complete
                      (fn [res]
-                       (om/set-state! owner :applications res))}))
+                       (om/update! app :all-apps (app-list->map res)))}))
 
     om/IRender
     (render [_]
@@ -40,5 +46,7 @@
          [:table.table.table-hover.table-striped
           [:thead [:tr [:th "Application"]]]
           [:tbody
-           (map render-row
-                (om/get-state owner :applications))]]]]))))
+           (->> app
+                :all-apps
+                sorted-app-list
+                (map render-row))]]]]))))
