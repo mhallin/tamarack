@@ -1,6 +1,4 @@
-from sqlalchemy import Column, ForeignKey, event
 from sqlalchemy.dialects.postgresql import HSTORE
-from sqlalchemy.orm import backref
 
 from ..db import db, locked_table
 
@@ -8,14 +6,14 @@ from ..db import db, locked_table
 class RequestByMinute(db.Model):
     __tablename__ = 'request_by_minute'
 
-    app_id = Column(db.Integer, ForeignKey('application.id'), primary_key=True)
-    timestamp = Column(db.DateTime(timezone=True), primary_key=True)
-    sensor_data = Column(HSTORE, nullable=False)
-    request_count = Column(db.BigInteger, nullable=False)
-    error_count = Column(db.BigInteger, nullable=False)
+    app_id = db.Column(db.Integer, db.ForeignKey('application.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime(timezone=True), primary_key=True)
+    sensor_data = db.Column(HSTORE, nullable=False)
+    request_count = db.Column(db.BigInteger, nullable=False)
+    error_count = db.Column(db.BigInteger, nullable=False)
 
     app = db.relationship('Application',
-                          backref=backref('request_by_minute', lazy='dynamic'))
+                          backref=db.backref('request_by_minute', lazy='dynamic'))
 
     def __init__(self, app, timestamp):
         self.app = app
@@ -50,15 +48,15 @@ class RequestByMinute(db.Model):
 class RequestEndpointByMinute(db.Model):
     __tablename__ = 'request_endpoint_by_minute'
 
-    app_id = Column(db.Integer, ForeignKey('application.id'), primary_key=True)
-    endpoint = Column(db.String(100), primary_key=True)
-    timestamp = Column(db.DateTime(timezone=True), primary_key=True)
-    sensor_data = Column(HSTORE, nullable=False)
-    request_count = Column(db.BigInteger, nullable=False)
-    error_count = Column(db.BigInteger, nullable=False)
+    app_id = db.Column(db.Integer, db.ForeignKey('application.id'), primary_key=True)
+    endpoint = db.Column(db.String(100), primary_key=True)
+    timestamp = db.Column(db.DateTime(timezone=True), primary_key=True)
+    sensor_data = db.Column(HSTORE, nullable=False)
+    request_count = db.Column(db.BigInteger, nullable=False)
+    error_count = db.Column(db.BigInteger, nullable=False)
 
     app = db.relationship('Application',
-                          backref=backref('request_endpoint_by_minute', lazy='dynamic'))
+                          backref=db.backref('request_endpoint_by_minute', lazy='dynamic'))
 
     def __init__(self, app, timestamp, endpoint):
         self.app = app
@@ -113,7 +111,7 @@ def process_minute_datapoint(app, datapoint):
             sensor_name, sensor_value)
 
 
-@event.listens_for(RequestByMinute, 'load')
-@event.listens_for(RequestEndpointByMinute, 'load')
+@db.event.listens_for(RequestByMinute, 'load')
+@db.event.listens_for(RequestEndpointByMinute, 'load')
 def make_int_sensor_values(target, context):
     target.sensor_data = {k: int(v) for k, v in target.sensor_data.items()}
