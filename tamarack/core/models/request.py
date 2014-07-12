@@ -22,28 +22,6 @@ class RequestByMinute(db.Model):
         self.request_count = 0
         self.error_count = 0
 
-    @classmethod
-    def prepare_datapoint(cls, app, timestamp):
-        with locked_table(cls):
-            if not cls.query.filter_by(app=app, timestamp=timestamp).first():
-                db.session.add(cls(app, timestamp))
-
-    @classmethod
-    def increment_master_data(cls, app, timestamp, request_count, error_count):
-        cls.query.filter_by(app=app, timestamp=timestamp) \
-            .update({
-                cls.request_count: cls.request_count + request_count,
-                cls.error_count: cls.error_count + error_count,
-            })
-
-    @classmethod
-    def increment_sensor_data(cls, app, timestamp, sensor_name, sensor_value):
-        cls.query.filter_by(app=app, timestamp=timestamp) \
-            .update({
-                cls.sensor_data: db.func.incr_key(
-                    cls.sensor_data, sensor_name, sensor_value)
-            }, synchronize_session=False)
-
 
 class RequestEndpointByMinute(db.Model):
     __tablename__ = 'request_endpoint_by_minute'
@@ -66,49 +44,23 @@ class RequestEndpointByMinute(db.Model):
         self.request_count = 0
         self.error_count = 0
 
-    @classmethod
-    def prepare_datapoint(cls, app, timestamp, endpoint):
-        with locked_table(cls):
-            if not cls.query.filter_by(app=app, timestamp=timestamp, endpoint=endpoint).first():
-                db.session.add(cls(app, timestamp, endpoint))
-
-    @classmethod
-    def increment_master_data(cls, app, timestamp, endpoint, request_count, error_count):
-        cls.query.filter_by(app=app, timestamp=timestamp, endpoint=endpoint) \
-            .update({
-                cls.request_count: cls.request_count + request_count,
-                cls.error_count: cls.error_count + error_count,
-            })
-
-    @classmethod
-    def increment_sensor_data(cls, app, timestamp, endpoint, sensor_name, sensor_value):
-        cls.query.filter_by(app=app, timestamp=timestamp, endpoint=endpoint) \
-            .update({
-                cls.sensor_data: db.func.incr_key(
-                    cls.sensor_data, sensor_name, sensor_value)
-            }, synchronize_session=False)
-
 
 def process_minute_datapoint(app, datapoint):
     timestamp = datapoint['timestamp']
     request_count = datapoint['request_count']
     error_count = datapoint['error_count']
     endpoint = datapoint['endpoint']
+    sensor_data = {k: str(v) for k, v in datapoint['sensor_data'].items()}
 
-    RequestByMinute.prepare_datapoint(app, timestamp)
-    RequestEndpointByMinute.prepare_datapoint(app, timestamp, endpoint)
+    db.session.execute(
+        db.func.update_request_by_minute(
+            app.id, timestamp,
+            sensor_data, request_count, error_count))
 
-    RequestByMinute.increment_master_data(app, timestamp,
-                                          request_count, error_count)
-    RequestEndpointByMinute.increment_master_data(app, timestamp, endpoint,
-                                                  request_count, error_count)
-
-    for sensor_name, sensor_value in datapoint['sensor_data'].items():
-        RequestByMinute.increment_sensor_data(app, timestamp,
-                                              sensor_name, sensor_value)
-        RequestEndpointByMinute.increment_sensor_data(
-            app, timestamp, endpoint,
-            sensor_name, sensor_value)
+    db.session.execute(
+        db.func.update_request_endpoint_by_minute(
+            app.id, timestamp, endpoint,
+            sensor_data, request_count, error_count))
 
 
 @db.event.listens_for(RequestByMinute, 'load')
