@@ -15,7 +15,7 @@ import sqlalchemy as sa
 
 
 def upgrade():
-    op.execute('CREATE EXTENSION hstore')
+    op.execute('CREATE EXTENSION IF NOT EXISTS hstore')
 
 
 def downgrade():

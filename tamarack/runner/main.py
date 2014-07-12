@@ -35,7 +35,7 @@ def devserver(ctx, enable_profiler):
         from werkzeug.contrib.profiler import ProfilerMiddleware
         app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
 
-    app.run(debug=app.config['DEBUG'], port=app.config['PORT'])
+    app.run(debug=app.config['DEBUG'], port=app.config['PORT'], host=app.config['LISTEN_ADDRESS'])
 
 
 @cli.command()
