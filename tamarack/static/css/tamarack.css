@@ -3,6 +3,9 @@
     padding: 10px;
 }
 
+#date-dropdown .nav {
+    padding: 5px 5px 15px;
+}
 
 .list-group-item.heading {
     text-transform: uppercase;
