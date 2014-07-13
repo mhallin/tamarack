@@ -23,20 +23,8 @@ class TamarackSdistCommand(SdistCommand):
         if result:
             raise Exception('Could not compile ClojureScript')
 
-    def run_copy_static(self):
-        print('copying static folder from frontend dir')
-
-        staticdir = thisdir / 'static'
-        destdir = thisdir / 'tamarack/static'
-
-        if path.exists(bytes(destdir)):
-            shutil.rmtree(bytes(destdir))
-
-        shutil.copytree(bytes(staticdir), bytes(destdir))
-
     def run(self):
         self.run_lein()
-        self.run_copy_static()
 
         super().run()
 
@@ -59,7 +47,7 @@ redis_requires = [
 
 setup(
     name='tamarack',
-    version='0.0.1',
+    version='0.0.3',
     description='A quantitative web application profiler',
     url='https://github.com/mhallin/tamarack',
 
