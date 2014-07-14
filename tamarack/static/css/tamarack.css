@@ -20,11 +20,11 @@
     border-left: 0;
     border-right: 0;
     border-radius: 0;
-    background-color: #f0f0f0;
+    background-color: #dddee0;
 }
 
 #sidebar {
-    background-color: #f0f0f0;
+    background-color: #dddee0;
     height: 100%;
     border-right: 1px solid #e7e7e7;
 }
@@ -44,6 +44,22 @@
 
 html, body {
     height: 100%;
+    font-family: Lato, sans-serif;
+}
+
+.navbar .navbar-brand a {
+    font-weight: 300;
+    text-transform: uppercase;
+    color: #53585f;
+}
+
+.navbar .navbar-brand a:hover {
+    text-decoration: none;
+}
+
+.navbar .navbar-nav li a {
+    color: #53585f;
+    font-weight: 300;
 }
 
 #sidebar ol {
@@ -68,7 +84,7 @@ html, body {
 }
 
 #sidebar .active {
-    background-color: #e3e3e3;
+    background-color: #d3d5da;
 }
 
 td.num-col {
