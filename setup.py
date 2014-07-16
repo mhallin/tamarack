@@ -53,7 +53,7 @@ redis_requires = [
 
 setup(
     name='tamarack',
-    version='0.0.5',
+    version='0.0.6',
     description='A quantitative web application profiler',
     url='https://github.com/mhallin/tamarack',
 
