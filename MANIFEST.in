@@ -3,3 +3,4 @@ recursive-include tamarack/templates *
 recursive-include tamarack/static *
 
 include setup.py README.rst MANIFEST.in
+include tamarack/alembic.ini

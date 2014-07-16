@@ -130,8 +130,11 @@ def db(ctx):
 
     app = create_app(ctx.obj['config'])
 
-    config = Config(os.path.join(os.path.dirname(__file__),
-                                 '../../alembic.ini'))
+    file_dir = os.path.abspath(os.path.dirname(__file__))
+
+    config = Config(os.path.join(file_dir, '../alembic.ini'))
+    config.set_section_option('alembic', 'script_location',
+                              os.path.join(file_dir, '../migrations'))
     config.set_section_option('alembic', 'sqlalchemy.url',
                               app.config['SQLALCHEMY_DATABASE_URI'])
 
