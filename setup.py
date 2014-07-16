@@ -23,7 +23,13 @@ class TamarackSdistCommand(SdistCommand):
         if result:
             raise Exception('Could not compile ClojureScript')
 
+    def clean_js_out(self):
+        print('cleaning js-out folder')
+
+        shutil.rmtree(bytes(thisdir / 'tamarack/static/js-out'))
+
     def run(self):
+        self.clean_js_out()
         self.run_lein()
 
         super().run()
