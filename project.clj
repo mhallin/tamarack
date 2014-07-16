@@ -1,9 +1,9 @@
 (defproject tamarack "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2234"]
-                 [om "0.6.4"]
+                 [org.clojure/clojurescript "0.0-2268"]
+                 [om "0.6.5"]
                  [secretary "1.2.0"]
-                 [sablono "0.2.17"]]
+                 [sablono "0.2.18"]]
 
   :plugins [[lein-cljsbuild "1.0.3"]]
 
@@ -20,9 +20,10 @@
             {:id "tamarack-release"
              :source-paths ["src-cljs"]
              :compiler {:output-to "tamarack/static/js-out/tamarack-main.min.js"
-                        :optimizations :advanced
+                        :optimizations :simple
                         :pretty-print false
-                        :externs ["node_modules/react-externs/externs.js"]}}
+                        :externs ["node_modules/react-externs/externs.js"
+                                  "externs/jQuery.limited-externs.js"]}}
             {:id "tamarack-tests"
              :source-paths ["src-cljs" "test-cljs"]
              :compiler {:output-to "target/out/tamarack-tests.js"
